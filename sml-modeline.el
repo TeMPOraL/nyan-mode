@@ -130,9 +130,10 @@ This can be 'percentage or 'line-number."
        (setq start (floor (* number-beg inner-len)))
        (setq end (floor (* number-end inner-len)))
        (setq string
-             (concat (format "%02d" (round (* number-beg 100)))
-                     "-"
-                     (format "%02d" (round (* number-end 100))) "%%")))
+             (propertize (concat (format "%02d" (round (* number-beg 100)))
+                                 "-"
+                                 (format "%02d" (round (* number-end 100))) "%%")
+                         'help-echo "nyancat")))
       ((eq sml-modeline-numbers 'line-numbers)
        (save-restriction
          (widen)
@@ -142,10 +143,11 @@ This can be 'percentage or 'line-number."
        (setq start (floor (* (/ number-beg (float number-max)) inner-len)))
        (setq end   (floor (* (/ number-end (float number-max)) inner-len)))
        (setq string
-             (concat "L"
-                     (format "%02d" number-beg)
-                     "-"
-                     (format "%02d" number-end))))
+             (propertize (concat "L"
+                                 (format "%02d" number-beg)
+                                 "-"
+                                 (format "%02d" number-end))
+                         'mouse-face 'bold-italic)))
       (t (error "Unknown sml-modeline-numbers=%S" sml-modeline-numbers)))
      (setq inner-len (max inner-len (length string)))
      (setq bpad-len (floor (/ (- inner-len (length string)) 2.0)))
