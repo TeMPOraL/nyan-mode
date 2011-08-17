@@ -130,10 +130,12 @@ This can be 'percentage or 'line-number."
        (setq start (floor (* number-beg inner-len)))
        (setq end (floor (* number-end inner-len)))
        (setq string
-             (propertize (concat (format "%02d" (round (* number-beg 100)))
-                                 "-"
-                                 (format "%02d" (round (* number-end 100))) "%%")
-                         'help-echo "nyancat")))
+             (concat (propertize (concat (format "%02d" (round (* number-beg 100)))
+                                  "-"
+                                  (format "%02d" (round (* number-end 100))) "%%")
+                          'help-echo "nyancat")
+                     (propertize "NYAN"
+                                 'display (create-image "~/nyan.png" 'png nil)))))
       ((eq sml-modeline-numbers 'line-numbers)
        (save-restriction
          (widen)
