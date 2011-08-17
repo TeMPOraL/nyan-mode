@@ -135,7 +135,7 @@ This can be 'percentage or 'line-number."
                                   (format "%02d" (round (* number-end 100))) "%%")
                           'help-echo "nyancat")
                      (propertize "NYAN"
-                                 'display (create-image "~/nyan.png" 'png nil)))))
+                                 'display (create-image "~/nyan.png" 'png nil :ascent 'center)))))
       ((eq sml-modeline-numbers 'line-numbers)
        (save-restriction
          (widen)
