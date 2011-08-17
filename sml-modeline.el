@@ -29,7 +29,8 @@
 ;;
 ;;; Change log:
 ;;
-;;
+;;  Undergoing extensive hacks in order to create a Nyan Mode ;).
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; This program is free software; you can redistribute it and/or
