@@ -134,6 +134,14 @@ This can be 'percentage or 'line-number."
                                   "-"
                                   (format "%02d" (round (* number-end 100))) "%%")
                           'help-echo "nyancat")
+                     (propertize "R1"
+                                 'display (create-image "~/rainbow.png" 'png nil :ascent 'center))
+                     (propertize "R2"
+                                 'display (create-image "~/rainbow.png" 'png nil :ascent 'center))
+                     (propertize "R2"
+                                 'display (create-image "~/rainbow.png" 'png nil :ascent 'center))
+                     (propertize "R2"
+                                 'display (create-image "~/rainbow.png" 'png nil :ascent 'center))
                      (propertize "NYAN"
                                  'display (create-image "~/nyan.png" 'png nil :ascent 'center)))))
       ((eq sml-modeline-numbers 'line-numbers)
