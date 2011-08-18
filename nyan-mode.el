@@ -63,19 +63,28 @@ This can be t or nil."
 (defvar nyan-cat-image (create-image "~/nyan.png" 'png nil :ascent 'center))
 (defvar nyan-rainbow-image (create-image "~/rainbow.png" 'png nil :ascent 'center))
 
-(defvar ojej 0)
-
 ;;; NOTE this function gets called pretty much every time an event
 ;;; (like keypress, or mousepress) occurs; if you have multiple
 ;;; frames, then this function gets automagically called several times
 ;;; per second (seems to be proportional to number of frames).
+
+(defun nyan-rainbow-for-percentage (percentage)
+ (let ((result ""))
+   (dotimes (number
+             (/ percentage 5))
+     (setq result (concat result (propertize "nya" 'display (create-image "~/rainbow.png" 'png nil :ascent 'center)))))
+   result))
+
 (defun nyan-create ()
-  (setq ojej (+ 1 ojej))
-  (concat (format "%02d" ojej)
-          (propertize "NYAN NYAN NYAN"
-                      'display nyan-rainbow-image)
-          (propertize "NYAN NYAN NYAN"
-                      'display nyan-cat-image)))
+  (let ((percentage (round (* 100
+                              (/ (- (float (point))
+                                    (float (point-min)))
+                                 (float (point-max)))))))
+ ;; Compute: line/number, buffer length, percentage.
+    (concat (format "%02d" percentage)
+            (nyan-rainbow-for-percentage percentage)
+            (propertize "NYAN NYAN NYAN"
+                        'display nyan-cat-image))))
 
 ;;; 
 ;;; CARGO CULT WARNING I have no idea what it does, maybe will figure
