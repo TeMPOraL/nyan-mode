@@ -59,13 +59,24 @@ This can be t or nil."
 
 ;;; TODO maybe customize background color and brackets or NyanCat.
 
+;;; Load images of Nyan Cat an it's rainbow.
+(defvar nyan-cat-image (create-image "~/nyan.png" 'png nil :ascent 'center))
+(defvar nyan-rainbow-image (create-image "~/rainbow.png" 'png nil :ascent 'center))
+
+
 ;;; TODO some content
+(defun nyan-create ()
+  (propertize "NYAN NYAN NYAN"
+              'display nyan-cat-image)) 
 
 ;;; 
 ;;; CARGO CULT WARNING I have no idea what it does, maybe will figure
 ;;; out later ;).
 ;;; Ok, does something with Emacs mode-line-position var.
 ;;; TODO figure it out.
+;;; 
+;;; I think it stores whatever was previously in the mode-line-position,
+;;; in order to restore it when the mode is turned off.
 (defvar nyan-old-car-mode-line-position nil)
 
 ;;;###autoload
