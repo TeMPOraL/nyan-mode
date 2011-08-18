@@ -63,11 +63,16 @@ This can be t or nil."
 (defvar nyan-cat-image (create-image "~/nyan.png" 'png nil :ascent 'center))
 (defvar nyan-rainbow-image (create-image "~/rainbow.png" 'png nil :ascent 'center))
 
+(defvar ojej 0)
 
 ;;; TODO some content
 (defun nyan-create ()
-  (propertize "NYAN NYAN NYAN"
-              'display nyan-cat-image)) 
+  (setq ojej (+ 1 ojej))
+  (concat (format "%02d" ojej)
+          (propertize "NYAN NYAN NYAN"
+                      'display nyan-rainbow-image)
+          (propertize "NYAN NYAN NYAN"
+                      'display nyan-cat-image)))
 
 ;;; 
 ;;; CARGO CULT WARNING I have no idea what it does, maybe will figure
