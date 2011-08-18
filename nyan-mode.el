@@ -47,6 +47,15 @@
       (nyan-mode -1)
       (nyan-mode 1))))
 
+(defcustom nyan-wavy-trail t
+  "If enabled, Nyan Cat's rainbow trail will be wavy."
+  :type '(choice (const :tag "Enabled" t)
+                 (const :tag "Disabled" nil))
+  :set (lambda (sym val)
+         (set-default sym val)
+         (nyan-refresh))
+  :group 'nyan)
+
 (defcustom nyan-animate-nyancat t
   "Enable animation for Nyan Cat.
 This can be t or nil."
@@ -72,7 +81,10 @@ This can be t or nil."
  (let ((result ""))
    (dotimes (number
              (/ percentage 5))
-     (setq result (concat result (propertize "nya" 'display (create-image "~/rainbow.png" 'png nil :ascent 'center)))))
+     (setq result (concat result (propertize "nya" 'display (create-image "~/rainbow.png" 'png nil :ascent (if (and nyan-wavy-trail
+                                                                                                                    (zerop (% number 2)))
+                                                                                                               80
+                                                                                                             'center))))))
    result))
 
 (defun nyan-create ()
