@@ -65,7 +65,10 @@ This can be t or nil."
 
 (defvar ojej 0)
 
-;;; TODO some content
+;;; NOTE this function gets called pretty much every time an event
+;;; (like keypress, or mousepress) occurs; if you have multiple
+;;; frames, then this function gets automagically called several times
+;;; per second (seems to be proportional to number of frames).
 (defun nyan-create ()
   (setq ojej (+ 1 ojej))
   (concat (format "%02d" ojej)
