@@ -33,8 +33,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Some TODOs
-;;; * Fix png background.
-;;; * Investigate why wavy rainbow didn't work on Antoszka's
+;;; * Investigate why wavy rainbow didn't work on Antoszka's computer.
 ;;; * Refactor-out :set lambdas in customs if possible.
 ;;; * MAYBE add something to protect users from going to 0 with nyanbar width?
 ;;; * Try to provide animations? :)
@@ -69,24 +68,37 @@
   :group 'nyan)
 
 ;;; Yeah, maybe one day.
-;; (defcustom nyan-animate-nyancat nil
-;;   "Enable animation for Nyan Cat.
-;; This can be t or nil."
-;;   :type '(choice (const :tag "Enabled" t)
-;;                  (const :tag "Disabled" nil))
-;;   :set (lambda (sym val)
-;;          (set-default sym val)
-;;          (nyan-refresh))
-;;   :group 'nyan)
+ (defcustom nyan-animate-nyancat nil
+   "Enable animation for Nyan Cat.
+; This can be t or nil."
+   :type '(choice (const :tag "Enabled" t)
+                  (const :tag "Disabled" nil))
+   :set (lambda (sym val)
+          (set-default sym val)
+          (nyan-refresh))
+   :group 'nyan)
+
+(defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
 (defconst +nyan-cat-size+ 3)
 
-(defconst +nyan-cat-image+ "~/nyan.png")
-(defconst +nyan-rainbow-image+ "~/rainbow.png")
-(defconst +nyan-outerspace-image+ "~/outerspace.png")
+(defconst +nyan-cat-image+ (concat +nyan-directory+ "img/nyan-frame-2.png"))
+(defconst +nyan-rainbow-image+ (concat +nyan-directory+ "img/rainbow.png"))
+(defconst +nyan-outerspace-image+ (concat +nyan-directory+ "img/outerspace.png"))
 
 ;;; Load images of Nyan Cat an it's rainbow.
 (defvar nyan-cat-image (create-image +nyan-cat-image+ 'png nil :ascent 'center))
+
+(defvar nyan-animation-frames (mapcar (lambda (id)
+                                        (create-image (concat +nyan-directory+ (format "img/nyan-frame-%d.png" id))
+                                                      'png nil :ascent 'center))
+                                      '(1 2 3 4 5 6)))
+(defvar nyan-current-frame 0)
+
+(defun nyan-get-anim-frame ()
+  (if nyan-animate-nyancat
+      (nth nyan-current-frame nyan-animation-frames)
+    nyan-cat-image))
 
 (defun nyan-create ()
   (let* ((percentage (round (* 100
@@ -98,7 +110,7 @@
          (outerspaces (- nyan-bar-length rainbows +nyan-cat-size+))
          (rainbow-string "")
          (nyancat-string (propertize "NYAN NYAN NYAN"
-                                     'display nyan-cat-image))
+                                     'display (nyan-get-anim-frame)))
          (outerspace-string ""))
     (dotimes (number rainbows)
       (setq rainbow-string (concat rainbow-string
