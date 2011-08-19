@@ -47,7 +47,7 @@
       (nyan-mode -1)
       (nyan-mode 1))))
 
-(defcustom nyan-wavy-trail t
+(defcustom nyan-wavy-trail nil
   "If enabled, Nyan Cat's rainbow trail will be wavy."
   :type '(choice (const :tag "Enabled" t)
                  (const :tag "Disabled" nil))
@@ -56,47 +56,70 @@
          (nyan-refresh))
   :group 'nyan)
 
-(defcustom nyan-animate-nyancat t
-  "Enable animation for Nyan Cat.
-This can be t or nil."
-  :type '(choice (const :tag "Enabled" t)
-                 (const :tag "Disabled" nil))
+;;; FIXME refactor (out) the lambda.
+;;; TODO add some security for going with nyan below 0.
+(defcustom nyan-bar-length 20
+  "Length of Nyan Cat bar in units; each unit is equal to an 8px
+  image. Minimum of 3 units are required for Nyan Cat."
   :set (lambda (sym val)
          (set-default sym val)
          (nyan-refresh))
   :group 'nyan)
 
+;;; Yeah, maybe one day.
+;; (defcustom nyan-animate-nyancat nil
+;;   "Enable animation for Nyan Cat.
+;; This can be t or nil."
+;;   :type '(choice (const :tag "Enabled" t)
+;;                  (const :tag "Disabled" nil))
+;;   :set (lambda (sym val)
+;;          (set-default sym val)
+;;          (nyan-refresh))
+;;   :group 'nyan)
+
 ;;; TODO maybe customize background color and brackets or NyanCat.
 
+(defconst +nyan-cat-size+ 3)
+
+(defconst +nyan-cat-image+ "~/nyan.png")
+(defconst +nyan-rainbow-image+ "~/rainbow.png")
+(defconst +nyan-outerspace-image+ "~/outerspace.png")
+
 ;;; Load images of Nyan Cat an it's rainbow.
-(defvar nyan-cat-image (create-image "~/nyan.png" 'png nil :ascent 'center))
-(defvar nyan-rainbow-image (create-image "~/rainbow.png" 'png nil :ascent 'center))
+(defvar nyan-cat-image (create-image +nyan-cat-image+ 'png nil :ascent 'center))
 
 ;;; NOTE this function gets called pretty much every time an event
 ;;; (like keypress, or mousepress) occurs; if you have multiple
 ;;; frames, then this function gets automagically called several times
 ;;; per second (seems to be proportional to number of frames).
-
-(defun nyan-rainbow-for-percentage (percentage)
- (let ((result ""))
-   (dotimes (number
-             (/ percentage 5))
-     (setq result (concat result (propertize "nya" 'display (create-image "~/rainbow.png" 'png nil :ascent (if (and nyan-wavy-trail
-                                                                                                                    (zerop (% number 2)))
-                                                                                                               80
-                                                                                                             'center))))))
-   result))
-
 (defun nyan-create ()
-  (let ((percentage (round (* 100
-                              (/ (- (float (point))
-                                    (float (point-min)))
-                                 (float (point-max)))))))
+  (let* ((percentage (round (* 100
+                               (/ (- (float (point))
+                                     (float (point-min)))
+                                  (float (point-max))))))
+         (rainbows (round (/ (* percentage (- nyan-bar-length +nyan-cat-size+))
+                             100)))
+         (outerspaces (- nyan-bar-length rainbows +nyan-cat-size+))
+         (rainbow-string "")
+         (nyancat-string (propertize "NYAN NYAN NYAN"
+                                     'display nyan-cat-image))
+         (outerspace-string ""))
+    (dotimes (number rainbows)
+      (setq rainbow-string (concat rainbow-string
+                                   (propertize "nya"
+                                               'display (create-image +nyan-rainbow-image+ 'png nil :ascent (if (and nyan-wavy-trail
+                                                                                                                     (zerop (% number 2)))
+                                                                                                                80
+                                                                                                              'center))))))
+    (dotimes (number outerspaces)
+      (setq outerspace-string (concat outerspace-string
+                                      (propertize "nya"
+                                                  'display (create-image +nyan-outerspace-image+ 'png nil :ascent 'center)))))
  ;; Compute: line/number, buffer length, percentage.
-    (concat (format "%02d" percentage)
-            (nyan-rainbow-for-percentage percentage)
-            (propertize "NYAN NYAN NYAN"
-                        'display nyan-cat-image))))
+    (concat ;(format "%02d" percentage)
+            rainbow-string
+            nyancat-string
+            outerspace-string)))
 
 ;;; 
 ;;; CARGO CULT WARNING I have no idea what it does, maybe will figure
