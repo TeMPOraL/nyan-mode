@@ -36,6 +36,7 @@
 ;;; * Investigate why wavy rainbow didn't work on Antoszka's computer.
 ;;; * Refactor-out :set lambdas in customs if possible.
 ;;; * MAYBE add something to protect users from going to 0 with nyanbar width?
+;;; * See if it was REALLY neccessary to reorder customizations and defvars in such a weird way.
 (defgroup nyan nil
   "Customization group for `nyan-mode'."
   :group 'frames)
@@ -47,6 +48,26 @@
                nyan-mode)
       (nyan-mode -1)
       (nyan-mode 1))))
+
+
+(defcustom nyan-animation-frame-interval 0.2
+  "Number of seconds between animation frames."
+  :set (lambda (sym val)
+         (set-default sym val)
+         (nyan-refresh))
+  :group 'nyan)
+
+(defvar nyan-animation-timer nil)
+
+(defun nyan-start-animation ()
+  (setq nyan-animation-timer (run-at-time "1 sec"
+                                          nyan-animation-frame-interval
+                                          'nyan-swich-anim-frame)))
+(defun nyan-stop-animation ()
+  (cancel-timer nyan-animation-timer)
+  (setq nyan-animation-timer nil))
+
+
 
 ;;; FIXME bug, doesn't work for antoszka.
 (defcustom nyan-wavy-trail nil
@@ -81,12 +102,6 @@ This can be t or nil."
          (nyan-refresh))
   :group 'nyan)
 
-(defcustom nyan-animation-frame-interval 0.2
-  "Number of seconds between animation frames."
-  :set (lambda (sym val)
-         (set-default sym val)
-         (nyan-refresh))
-  :group 'nyan)
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
@@ -105,19 +120,9 @@ This can be t or nil."
                                       '(1 2 3 4 5 6)))
 (defvar nyan-current-frame 0)
 
-(defvar nyan-animation-timer nil)
-
 (defun nyan-swich-anim-frame ()
   (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
   (redraw-modeline))
-
-(defun nyan-start-animation ()
-  (setq nyan-animation-timer (run-at-time "1 sec"
-                                          nyan-animation-frame-interval
-                                          'nyan-swich-anim-frame)))
-(defun nyan-stop-animation ()
-  (cancel-timer nyan-animation-timer)
-  (setq nyan-animation-timer nil))
 
 (defun nyan-get-anim-frame ()
   (if nyan-animate-nyancat
