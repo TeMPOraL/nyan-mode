@@ -36,7 +36,6 @@
 ;;; * Investigate why wavy rainbow didn't work on Antoszka's computer.
 ;;; * Refactor-out :set lambdas in customs if possible.
 ;;; * MAYBE add something to protect users from going to 0 with nyanbar width?
-;;; * Try to provide animations? :)
 (defgroup nyan nil
   "Customization group for `nyan-mode'."
   :group 'frames)
@@ -59,7 +58,7 @@
          (nyan-refresh))
   :group 'nyan)
 
-(defcustom nyan-bar-length 20
+(defcustom nyan-bar-length 32
   "Length of Nyan Cat bar in units; each unit is equal to an 8px
   image. Minimum of 3 units are required for Nyan Cat."
   :set (lambda (sym val)
@@ -68,15 +67,26 @@
   :group 'nyan)
 
 ;;; Yeah, maybe one day.
- (defcustom nyan-animate-nyancat nil
-   "Enable animation for Nyan Cat.
-; This can be t or nil."
-   :type '(choice (const :tag "Enabled" t)
-                  (const :tag "Disabled" nil))
-   :set (lambda (sym val)
-          (set-default sym val)
-          (nyan-refresh))
-   :group 'nyan)
+(defcustom nyan-animate-nyancat nil
+  "Enable animation for Nyan Cat.
+This can be t or nil."
+  :type '(choice (const :tag "Enabled" t)
+                 (const :tag "Disabled" nil))
+  :set (lambda (sym val)
+         (set-default sym val)
+         (if (and (not val) nyan-animation-timer)
+             (nyan-stop-animation)
+           (if (and val (not nyan-animation-timer))
+               (nyan-start-animation)))
+         (nyan-refresh))
+  :group 'nyan)
+
+(defcustom nyan-animation-frame-interval 0.2
+  "Number of seconds between animation frames."
+  :set (lambda (sym val)
+         (set-default sym val)
+         (nyan-refresh))
+  :group 'nyan)
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
@@ -96,8 +106,6 @@
 (defvar nyan-current-frame 0)
 
 (defvar nyan-animation-timer nil)
-
-(defvar nyan-animation-frame-interval 1)
 
 (defun nyan-swich-anim-frame ()
   (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
