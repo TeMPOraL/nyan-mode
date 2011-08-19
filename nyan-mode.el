@@ -5,11 +5,9 @@
 ;;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;;; URL: http://nyan-mode.buildsomethingamazing.com
 ;;; Keywords: nyan, cat, lulz, build something amazing
-
-;;; FIXME INSERT GPL
-
-;;; Most of the code here is stolen from/copied from/inspired by
-;;; sml-modeline.el, written by Lennart Borgman
+;;; 
+;;; Inspired by (and in few places copied from) sml-modeline.el,
+;;; written by Lennart Borgman
 ;;; See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
 
 
