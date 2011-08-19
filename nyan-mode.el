@@ -34,11 +34,16 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; Some TODOs
+;;; * Fix png background.
+;;; * Investigate why wavy rainbow didn't work on Antoszka's
+;;; * Refactor-out :set lambdas in customs if possible.
+;;; * MAYBE add something to protect users from going to 0 with nyanbar width?
+;;; * Try to provide animations? :)
 (defgroup nyan nil
   "Customization group for `nyan-mode'."
   :group 'frames)
 
-;;; CARGO CULT CODE (copied from somewhere else, to be processed)
 (defun nyan-refresh ()
   "Refresh after option changes if loaded."
   (when (featurep 'nyan-mode)
@@ -47,6 +52,7 @@
       (nyan-mode -1)
       (nyan-mode 1))))
 
+;;; FIXME bug, doesn't work for antoszka.
 (defcustom nyan-wavy-trail nil
   "If enabled, Nyan Cat's rainbow trail will be wavy."
   :type '(choice (const :tag "Enabled" t)
@@ -56,8 +62,6 @@
          (nyan-refresh))
   :group 'nyan)
 
-;;; FIXME refactor (out) the lambda.
-;;; TODO add some security for going with nyan below 0.
 (defcustom nyan-bar-length 20
   "Length of Nyan Cat bar in units; each unit is equal to an 8px
   image. Minimum of 3 units are required for Nyan Cat."
@@ -77,8 +81,6 @@
 ;;          (nyan-refresh))
 ;;   :group 'nyan)
 
-;;; TODO maybe customize background color and brackets or NyanCat.
-
 (defconst +nyan-cat-size+ 3)
 
 (defconst +nyan-cat-image+ "~/nyan.png")
@@ -88,10 +90,6 @@
 ;;; Load images of Nyan Cat an it's rainbow.
 (defvar nyan-cat-image (create-image +nyan-cat-image+ 'png nil :ascent 'center))
 
-;;; NOTE this function gets called pretty much every time an event
-;;; (like keypress, or mousepress) occurs; if you have multiple
-;;; frames, then this function gets automagically called several times
-;;; per second (seems to be proportional to number of frames).
 (defun nyan-create ()
   (let* ((percentage (round (* 100
                                (/ (- (float (point))
@@ -116,19 +114,10 @@
                                       (propertize "nya"
                                                   'display (create-image +nyan-outerspace-image+ 'png nil :ascent 'center)))))
  ;; Compute: line/number, buffer length, percentage.
-    (concat ;(format "%02d" percentage)
-            rainbow-string
+    (concat rainbow-string
             nyancat-string
             outerspace-string)))
 
-;;; 
-;;; CARGO CULT WARNING I have no idea what it does, maybe will figure
-;;; out later ;).
-;;; Ok, does something with Emacs mode-line-position var.
-;;; TODO figure it out.
-;;; 
-;;; I think it stores whatever was previously in the mode-line-position,
-;;; in order to restore it when the mode is turned off.
 (defvar nyan-old-car-mode-line-position nil)
 
 ;;;###autoload
