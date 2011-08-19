@@ -95,6 +95,22 @@
                                       '(1 2 3 4 5 6)))
 (defvar nyan-current-frame 0)
 
+(defvar nyan-animation-timer nil)
+
+(defvar nyan-animation-frame-interval 1)
+
+(defun nyan-swich-anim-frame ()
+  (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
+  (redraw-modeline))
+
+(defun nyan-start-animation ()
+  (setq nyan-animation-timer (run-at-time "1 sec"
+                                          nyan-animation-frame-interval
+                                          'nyan-swich-anim-frame)))
+(defun nyan-stop-animation ()
+  (cancel-timer nyan-animation-timer)
+  (setq nyan-animation-timer nil))
+
 (defun nyan-get-anim-frame ()
   (if nyan-animate-nyancat
       (nth nyan-current-frame nyan-animation-frames)
