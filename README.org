@@ -32,8 +32,6 @@ Customizing nyan-animate-nyancat is broken; don't do it.
 Code and idea inspired by sml-modeline.el, written by Lennart Borgman.
 See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
 
-For animated Nyan Cat, I used frames [[http://media.photobucket.com/image/nyan%20cat%20sprites/DryBowser455/th_NyanCatSprite.png?t=1304659408][by DryBowser455]]. There's also a
-standing Nyan and rainbow image, extracted from a gif similar to [[http://4.bp.blogspot.com/-Ozp7QtT81xM/TkVqBTYkhjI/AAAAAAAABeM/ZyuDkGeAS6w/s1600/nyan2.gif][this one]].
-
+For animated Nyan Cat, I used frames [[http://media.photobucket.com/image/nyan%20cat%20sprites/DryBowser455/th_NyanCatSprite.png?t=1304659408][by DryBowser455]].
 
 Nyanyanyanyanyanyanya!
