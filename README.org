@@ -1,0 +1,32 @@
+* Nyan Mode - Turn your Emacs into Nyanmacs! :)
+
+WARNING, MIND DUMBING CONTENT INSIDE.
+
+Nyan Mode is an analog indicator of your position in the buffer. The
+Cat should go from left to right in your mode-line, as you move your
+point from 0% to 100%.
+
+** Features
+  - Mind dumbing content included.
+  - Experimental animation (M-x set-variable <ret> nyan-animate-nyancat <ret> t <ret>
+  - Customizable properties.
+
+NOT INCLUDED: music.
+
+** Known issues
+Current version uses PNG images, which require libpng to be available
+for Emacs. The lib is sometimes missing (e.g. some Windows
+installation). To make it work on Windows, one 
+
+So far it didn't work on Emacs 24 :(. Any help with that would be appreciated.
+
+** Credits
+
+Code and idea inspired by sml-modeline.el, written by Lennart Borgman.
+See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
+
+For animated Nyan Cat, I used frames [[http://media.photobucket.com/image/nyan%20cat%20sprites/DryBowser455/th_NyanCatSprite.png?t=1304659408][by DryBowser455]]. There's also a
+standing Nyan and rainbow image, extracted from a gif similar to [[http://4.bp.blogspot.com/-Ozp7QtT81xM/TkVqBTYkhjI/AAAAAAAABeM/ZyuDkGeAS6w/s1600/nyan2.gif][this one]].
+
+
+Nyanyanyanyanyanyanya!
