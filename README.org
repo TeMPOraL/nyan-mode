@@ -28,6 +28,9 @@ point from 0% to 100%.
 
 NOT INCLUDED: music.
 
+* Download/source
+  Everything is on Github - https://github.com/TeMPOraL/nyan-mode :).
+
 * Known issues
 It's my second attempt to write a minor mode in Emacs, so there will
 definiely be some bugs.
