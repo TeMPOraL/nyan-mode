@@ -32,8 +32,6 @@ download a proper DLL and put it into emacs bin/ folder. To see which
 DLL is needed, do: M-x describe-variable <ret> image-library-alist
 <ret>.
 
-So far it didn't work on Emacs 24 :(. Any help with that would be appreciated.
-
 Customizing nyan-animate-nyancat is broken; don't do it.
 
 ** Credits
