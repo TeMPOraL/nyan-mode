@@ -60,7 +60,7 @@ For animated Nyan Cat, I used frames [[http://media.photobucket.com/image/nyan%2
 
 * Feedback
 If you like it / don't like it, drop me a message at temporal.pl@gmail.com.
-You can also discuss it on Hacker News.
+You can also [[http://news.ycombinator.com/item?id=2906632][discuss it on Hacker News]].
 
 Jacek Zlydach, http://temporal.pr0.pl/devblog/
 
