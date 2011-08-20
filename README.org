@@ -47,7 +47,8 @@ download a proper DLL and put it into emacs bin/ folder. To see which
 DLL is needed, do: M-x describe-variable <ret> image-library-alist
 <ret>.
 
-So far it didn't work on Emacs 24 :(. Any help with that would be appreciated.
++So far it didn't work on Emacs 24 :(. Any help with that would be appreciated.+
+[[http://www.reddit.com/r/emacs/comments/jov1m/nyanmodeel_turn_your_emacs_into_nyanmacs/c2dxfs8][Thanks, MaikB]] :).
 
 Customizing nyan-animate-nyancat is broken; don't do it.
 
