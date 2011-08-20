@@ -1,14 +1,26 @@
-* Nyan Mode - Turn your Emacs into Nyanmacs! :)
+#+title: Nyan Mode - Turn your Emacs into Nyanmacs!
+#+DESCRIPTION: nyan-mode.el - Nyan Mode - Turn your Emacs into Nyanmacs!
+#+KEYWORDS: nyan cat, pop tart cat, emacs
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t email:nil timestamp:nil author:nil
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:   
+#+LINK_HOME: 
+#+XSLT: 
 
- *WARNING, MIND DUMBING CONTENT INSIDE.*
+*WARNING, MIND DUMBING CONTENT INSIDE.*
 
-[[file:screenshot.png]]
-
+* Nyan Mode
 Nyan Mode is an analog indicator of your position in the buffer. The
 Cat should go from left to right in your mode-line, as you move your
 point from 0% to 100%.
 
-** Features
+[[file:screenshot.png]]
+
+
+* Features
   - Mind dumbing content included,
   - Experimental animation (M-x nyan-start-animation, M-x nyan-stop-animation),
   - Wavy rainbow (M-x set-variable <ret> nyan-wavy-trail <ret> t),
@@ -16,7 +28,7 @@ point from 0% to 100%.
 
 NOT INCLUDED: music.
 
-** Known issues
+* Known issues
 It's my second attempt to write a minor mode in Emacs, so there will
 definiely be some bugs.
 
@@ -36,11 +48,20 @@ So far it didn't work on Emacs 24 :(. Any help with that would be appreciated.
 
 Customizing nyan-animate-nyancat is broken; don't do it.
 
-** Credits
+* Credits
 
 Code and idea inspired by sml-modeline.el, written by Lennart Borgman.
 See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
 
 For animated Nyan Cat, I used frames [[http://media.photobucket.com/image/nyan%20cat%20sprites/DryBowser455/th_NyanCatSprite.png?t=1304659408][by DryBowser455]].
 
-Nyanyanyanyanyanyanya!
+* Feedback
+If you like it / don't like it, drop me a message at temporal.pl@gmail.com.
+You can also discuss it on Hacker News.
+
+Jacek Zlydach, http://temporal.pr0.pl/devblog/
+
+* What's all about with that cat?
+[[http://en.wikipedia.org/wiki/Nyan_Cat][Haven't been using the internet lately? ;)]].
+
+[[http://nyan.cat/][Nyanyanyanyanyanyanya]]!
