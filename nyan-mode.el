@@ -136,21 +136,21 @@ This can be t or nil."
                              100)))
          (outerspaces (- nyan-bar-length rainbows +nyan-cat-size+))
          (rainbow-string "")
-         (nyancat-string (propertize "NYAN NYAN NYAN"
+         (nyancat-string (propertize "[]*"
                                      'display (nyan-get-anim-frame)))
          (outerspace-string ""))
     (dotimes (number rainbows)
       (setq rainbow-string (concat rainbow-string
-                                   (propertize "nya"
+                                   (propertize "|"
                                                'display (create-image +nyan-rainbow-image+ 'png nil :ascent (if (and nyan-wavy-trail
                                                                                                                      (zerop (% number 2)))
                                                                                                                 80
                                                                                                               'center))))))
     (dotimes (number outerspaces)
       (setq outerspace-string (concat outerspace-string
-                                      (propertize "nya"
+                                      (propertize "-"
                                                   'display (create-image +nyan-outerspace-image+ 'png nil :ascent 'center)))))
- ;; Compute: line/number, buffer length, percentage.
+    ;; Compute Nyan Cat string.
     (concat rainbow-string
             nyancat-string
             outerspace-string)))
