@@ -36,7 +36,7 @@
 ;;; * Investigate why wavy rainbow didn't work on Antoszka's computer.
 ;;; * Refactor-out :set lambdas in customs if possible.
 ;;; * MAYBE add something to protect users from going to 0 with nyanbar width?
-;;; * See if it was REALLY neccessary to reorder customizations and defvars in such a weird way.
+;;; * Add credits for used images.
 (defgroup nyan nil
   "Customization group for `nyan-mode'."
   :group 'frames)
@@ -48,7 +48,6 @@
                nyan-mode)
       (nyan-mode -1)
       (nyan-mode 1))))
-
 
 (defcustom nyan-animation-frame-interval 0.2
   "Number of seconds between animation frames."
@@ -66,7 +65,6 @@
 (defun nyan-stop-animation ()
   (cancel-timer nyan-animation-timer)
   (setq nyan-animation-timer nil))
-
 
 
 ;;; FIXME bug, doesn't work for antoszka.
@@ -107,7 +105,7 @@ This can be t or nil."
 
 (defconst +nyan-cat-size+ 3)
 
-(defconst +nyan-cat-image+ (concat +nyan-directory+ "img/nyan-frame-2.png"))
+(defconst +nyan-cat-image+ (concat +nyan-directory+ "img/nyan.png"))
 (defconst +nyan-rainbow-image+ (concat +nyan-directory+ "img/rainbow.png"))
 (defconst +nyan-outerspace-image+ (concat +nyan-directory+ "img/outerspace.png"))
 
