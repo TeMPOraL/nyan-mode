@@ -179,4 +179,4 @@ option `scroll-bar-mode'."
     (setcar mode-line-position nyan-old-car-mode-line-position)))
 
 
-(provide 'nyan)
+(provide 'nyan-mode)
