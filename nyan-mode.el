@@ -59,12 +59,19 @@
 (defvar nyan-animation-timer nil)
 
 (defun nyan-start-animation ()
-  (setq nyan-animation-timer (run-at-time "1 sec"
-                                          nyan-animation-frame-interval
-                                          'nyan-swich-anim-frame)))
+  (interactive)
+  (when (not nyan-animate-nyancat)
+    (setq nyan-animation-timer (run-at-time "1 sec"
+                                            nyan-animation-frame-interval
+                                            'nyan-swich-anim-frame))
+    (setq nyan-animate-nyancat t)))
+
 (defun nyan-stop-animation ()
-  (cancel-timer nyan-animation-timer)
-  (setq nyan-animation-timer nil))
+  (interactive)
+  (when nyan-animate-nyancat
+    (cancel-timer nyan-animation-timer)
+    (setq nyan-animation-timer nil)
+    (setq nyan-animate-nyancat nil)))
 
 
 ;;; FIXME bug, doesn't work for antoszka.
@@ -93,10 +100,9 @@ This can be t or nil."
                  (const :tag "Disabled" nil))
   :set (lambda (sym val)
          (set-default sym val)
-         (if (and (not val) nyan-animation-timer)
-             (nyan-stop-animation)
-           (if (and val (not nyan-animation-timer))
-               (nyan-start-animation)))
+         (if val
+             (nyan-start-animation)
+           (nyan-stop-animation))
          (nyan-refresh))
   :group 'nyan)
 

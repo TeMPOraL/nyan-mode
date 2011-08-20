@@ -7,13 +7,16 @@ Cat should go from left to right in your mode-line, as you move your
 point from 0% to 100%.
 
 ** Features
-  - Mind dumbing content included.
-  - Experimental animation (M-x set-variable <ret> nyan-animate-nyancat <ret> t <ret>)
+  - Mind dumbing content included,
+  - Experimental animation (M-x nyan-start-animation, M-x nyan-stop-animation),
   - Customizable properties.
 
 NOT INCLUDED: music.
 
 ** Known issues
+It's my second attempt to write a minor mode in Emacs, so there will
+definiely be some bugs.
+
 Current version uses PNG images, which require libpng to be available
 for Emacs. The lib is sometimes missing (e.g. some Windows
 installation). To make it work on Windows, one needs to download a
@@ -21,6 +24,8 @@ proper DLL and put it into emacs bin/ folder. To see which DLL is needed,
 do: M-x describe-variable <ret> image-library-alist <ret>.
 
 So far it didn't work on Emacs 24 :(. Any help with that would be appreciated.
+
+Customizing nyan-animate-nyancat is broken; don't do it.
 
 ** Credits
 
