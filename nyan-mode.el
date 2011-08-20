@@ -4,7 +4,7 @@
 ;;; 
 ;;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;;; URL: http://nyan-mode.buildsomethingamazing.com
-;;; Keywords: nyan, cat, lulz, build something amazing
+;;; Keywords: nyan, cat, lulz, pop tart cat, build something amazing
 ;;; 
 ;;; Inspired by (and in few places copied from) sml-modeline.el,
 ;;; written by Lennart Borgman
@@ -92,7 +92,6 @@
          (nyan-refresh))
   :group 'nyan)
 
-;;; Yeah, maybe one day.
 (defcustom nyan-animate-nyancat nil
   "Enable animation for Nyan Cat.
 This can be t or nil."

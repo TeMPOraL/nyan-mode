@@ -1,6 +1,6 @@
 * Nyan Mode - Turn your Emacs into Nyanmacs! :)
 
-WARNING, MIND DUMBING CONTENT INSIDE.
+ *WARNING, MIND DUMBING CONTENT INSIDE.*
 
 Nyan Mode is an analog indicator of your position in the buffer. The
 Cat should go from left to right in your mode-line, as you move your
@@ -9,6 +9,7 @@ point from 0% to 100%.
 ** Features
   - Mind dumbing content included,
   - Experimental animation (M-x nyan-start-animation, M-x nyan-stop-animation),
+  - Wavy rainbow (M-x set-variable <ret> nyan-wavy-trail <ret> t),
   - Customizable properties.
 
 NOT INCLUDED: music.
@@ -17,11 +18,17 @@ NOT INCLUDED: music.
 It's my second attempt to write a minor mode in Emacs, so there will
 definiely be some bugs.
 
-Current version uses PNG images, which require libpng to be available
-for Emacs. The lib is sometimes missing (e.g. some Windows
-installation). To make it work on Windows, one needs to download a
-proper DLL and put it into emacs bin/ folder. To see which DLL is needed,
-do: M-x describe-variable <ret> image-library-alist <ret>.
+This version uses XPM images, which should be supported by default by
+most Emacs 23 installations, Windows included. In case it doesn't
+work, try switching to master-png branch. This branch, however, may
+have it's own issues:
+
+There was a problem with displaying PNG images, which require libpng
+to be available for Emacs. The lib is sometimes missing (e.g. some
+Windows installation). To make it work on Windows, one needs to
+download a proper DLL and put it into emacs bin/ folder. To see which
+DLL is needed, do: M-x describe-variable <ret> image-library-alist
+<ret>.
 
 So far it didn't work on Emacs 24 :(. Any help with that would be appreciated.
 
