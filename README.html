@@ -7,7 +7,7 @@ lang="en" xml:lang="en">
 <title>Nyan Mode - Turn your Emacs into Nyanmacs!</title>
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2011-08-20 20:13:49 "/>
+<meta name="generated" content="2011-08-25 00:44:14 "/>
 <meta name="author" content=""/>
 <meta name="description" content="nyan-mode.el - Nyan Mode - Turn your Emacs into Nyanmacs!"/>
 <meta name="keywords" content="nyan cat, pop tart cat, emacs"/>
@@ -93,10 +93,11 @@ lang="en" xml:lang="en">
 <li><a href="#sec-1">1 Nyan Mode </a></li>
 <li><a href="#sec-2">2 Features </a></li>
 <li><a href="#sec-3">3 Download/source </a></li>
-<li><a href="#sec-4">4 Known issues </a></li>
-<li><a href="#sec-5">5 Credits </a></li>
-<li><a href="#sec-6">6 Feedback </a></li>
-<li><a href="#sec-7">7 What's all about with that cat? </a></li>
+<li><a href="#sec-4">4 Using Nyan Mode with custom modeline </a></li>
+<li><a href="#sec-5">5 Known issues </a></li>
+<li><a href="#sec-6">6 Credits </a></li>
+<li><a href="#sec-7">7 Feedback </a></li>
+<li><a href="#sec-8">8 What's all about with that cat? </a></li>
 </ul>
 </div>
 </div>
@@ -105,7 +106,12 @@ lang="en" xml:lang="en">
 <h2 id="sec-1"><span class="section-number-2">1</span> Nyan Mode </h2>
 <div class="outline-text-2" id="text-1">
 
-<p>Nyan Mode is an analog indicator of your position in the buffer. The
+
+<p>
+<b>NEW!</b> <a href="http://temporal.pr0.pl/devblog/2011/08/25/introducing-nyan-mode-el-turn-your-emacs-into-nyanmacs/">Read the Nyanmacs story</a>!
+</p>
+<p>
+Nyan Mode is an analog indicator of your position in the buffer. The
 Cat should go from left to right in your mode-line, as you move your
 point from 0% to 100%.
 </p>
@@ -154,8 +160,29 @@ Customizable properties.
 </div>
 
 <div id="outline-container-4" class="outline-2">
-<h2 id="sec-4"><span class="section-number-2">4</span> Known issues </h2>
+<h2 id="sec-4"><span class="section-number-2">4</span> Using Nyan Mode with custom modeline </h2>
 <div class="outline-text-2" id="text-4">
+
+<p>For those who were asking, or are planning to, <a href="http://friendfeed.com/amitp/b4097da0/nyan-mode-turn-your-emacs-into-nyanmacs">Amit Patel shared</a>
+some tips on how to make nyan-mode work with custom modeline.
+</p>
+<p>
+She basically changed the mode-line-format to include:
+</p>
+
+
+<pre class="src src-emacs-lisp">(<span style="color: #ffaa00;">:eval</span> (list (nyan-create)))  
+</pre>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Known issues </h2>
+<div class="outline-text-2" id="text-5">
 
 <p>It's my second attempt to write a minor mode in Emacs, so there will
 definiely be some bugs.
@@ -185,9 +212,9 @@ Customizing nyan-animate-nyancat is broken; don't do it.
 
 </div>
 
-<div id="outline-container-5" class="outline-2">
-<h2 id="sec-5"><span class="section-number-2">5</span> Credits </h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Credits </h2>
+<div class="outline-text-2" id="text-6">
 
 
 <p>
@@ -201,9 +228,9 @@ For animated Nyan Cat, I used frames <a href="http://media.photobucket.com/image
 
 </div>
 
-<div id="outline-container-6" class="outline-2">
-<h2 id="sec-6"><span class="section-number-2">6</span> Feedback </h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Feedback </h2>
+<div class="outline-text-2" id="text-7">
 
 <p>If you like it / don't like it, drop me a message at temporal.pl@gmail.com.
 You can also <a href="http://news.ycombinator.com/item?id=2906632">discuss it on Hacker News</a>.
@@ -215,11 +242,11 @@ Jacek Zlydach, <a href="http://temporal.pr0.pl/devblog/">http://temporal.pr0.pl/
 
 </div>
 
-<div id="outline-container-7" class="outline-2">
-<h2 id="sec-7"><span class="section-number-2">7</span> What's all about with that cat? </h2>
-<div class="outline-text-2" id="text-7">
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> What's all about with that cat? </h2>
+<div class="outline-text-2" id="text-8">
 
-<p><a href="http://en.wikipedia.org/wiki/Nyan_Cat">Haven't been using the internet lately? ;)</a>.
+<p><a href="http://en.wikipedia.org/wiki/Nyan_Cat">Haven't been using the Internet lately? ;)</a>.
 </p>
 <p>
 <a href="http://nyan.cat/">Nyanyanyanyanyanyanya</a>!
