@@ -2,6 +2,8 @@
 
  *WARNING, MIND DUMBING CONTENT INSIDE.*
 
+Nyanmacs is expanding!! [[http://temporal.pr0.pl/devblog/2011/08/25/introducing-nyan-mode-el-turn-your-emacs-into-nyanmacs/][Read the story so far]]! :).
+
 [[file:screenshot.png]]
 
 Nyan Mode is an analog indicator of your position in the buffer. The
