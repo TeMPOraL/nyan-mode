@@ -4,12 +4,12 @@
 ;;; 
 ;;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;;; URL: http://nyan-mode.buildsomethingamazing.com
+;;; Version: 0.1
 ;;; Keywords: nyan, cat, lulz, pop tart cat, build something amazing
 ;;; 
 ;;; Inspired by (and in few places copied from) sml-modeline.el,
 ;;; written by Lennart Borgman
 ;;; See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; LICENSE
@@ -180,3 +180,5 @@ option `scroll-bar-mode'."
 
 
 (provide 'nyan-mode)
+
+;;; nyan-mode.el ends here
