@@ -4,7 +4,7 @@
 ;;;
 ;;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;;; URL: http://nyan-mode.buildsomethingamazing.com
-;;; Version: 0.1
+;;; Version: 0.2
 ;;; Keywords: nyan, cat, lulz, pop tart cat, build something amazing
 ;;;
 ;;; Inspired by (and in few places copied from) sml-modeline.el,
