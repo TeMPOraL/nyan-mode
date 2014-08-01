@@ -1,12 +1,12 @@
 ;;; nyan-mode.el --- Nyan Cat shows position in current buffer in mode-line.
 ;;;
 ;;; Nyanyanyanyanyanyanya!
-;;; 
+;;;
 ;;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;;; URL: http://nyan-mode.buildsomethingamazing.com
 ;;; Version: 0.1
 ;;; Keywords: nyan, cat, lulz, pop tart cat, build something amazing
-;;; 
+;;;
 ;;; Inspired by (and in few places copied from) sml-modeline.el,
 ;;; written by Lennart Borgman
 ;;; See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
@@ -60,7 +60,8 @@
 
 (defun nyan-start-animation ()
   (interactive)
-  (when (not nyan-animate-nyancat)
+  (when (not (and nyan-animate-nyancat
+		  nyan-animation-timer))
     (setq nyan-animation-timer (run-at-time "1 sec"
                                             nyan-animation-frame-interval
                                             'nyan-swich-anim-frame))
@@ -68,7 +69,8 @@
 
 (defun nyan-stop-animation ()
   (interactive)
-  (when nyan-animate-nyancat
+  (when (and nyan-animate-nyancat
+	     nyan-animation-timer)
     (cancel-timer nyan-animation-timer)
     (setq nyan-animation-timer nil)
     (setq nyan-animate-nyancat nil)))
