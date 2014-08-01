@@ -105,6 +105,9 @@ This can be t or nil."
          (nyan-refresh))
   :group 'nyan)
 
+(defcustom nyan-cat-face-number 1
+  "Select cat face number for console."
+  )
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
@@ -122,6 +125,18 @@ This can be t or nil."
                                                       'xpm nil :ascent 95))
                                       '(1 2 3 4 5 6)))
 (defvar nyan-current-frame 0)
+
+(defconst +catface+ [
+        ["[]*" "[]#"]
+        ["(*^ｰﾟ)" "( ^ｰ^)" "(^ｰ^ )" "(ﾟｰ^*)"]
+        ["(´ω｀三 )" "( ´ω三｀ )" "( ´三ω｀ )" "( 三´ω｀)"
+         "( 三´ω｀)" "( ´三ω｀ )" "( ´ω三｀ )" "(´ω｀三 )"]
+        ["(´д｀;)" "( ´д`;)" "( ;´д`)" "(;´д` )"]
+        ["(」・ω・)」" "(／・ω・)／" "(」・ω・)」" "(／・ω・)／"
+         "(」・ω・)」" "(／・ω・)／" "(」・ω・)」" "＼(・ω・)／"]
+        ["(＞ワ＜三　　　)" "(　＞ワ三＜　　)"
+         "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
+         "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]])
 
 (defun nyan-swich-anim-frame ()
   (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
@@ -148,12 +163,23 @@ This can be t or nil."
                (- nyan-bar-length +nyan-cat-size+))
           100)))
 
+(defun catface () (aref +catface+ nyan-cat-face-number))
+
+(defun catface-index ()
+  (min (round (/ (* (round (* 100
+                         (/ (- (float (point))
+                               (float (point-min)))
+                            (float (point-max)))))
+               (length (catface)))
+          100)) (- (length (catface)) 1)))
+
 (defun nyan-create ()
   (let* ((rainbows (nyan-number-of-rainbows))
          (outerspaces (- nyan-bar-length rainbows +nyan-cat-size+))
          (rainbow-string "")
-         (nyancat-string (propertize "[]*"
-                                     'display (nyan-get-anim-frame)))
+         (nyancat-string (propertize
+                          (aref (catface) (catface-index))
+                          'display (nyan-get-anim-frame)))
          (outerspace-string ""))
     (dotimes (number rainbows)
       (setq rainbow-string (concat rainbow-string
