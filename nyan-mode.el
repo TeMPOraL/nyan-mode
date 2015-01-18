@@ -108,8 +108,7 @@ This can be t or nil."
   :group 'nyan)
 
 (defcustom nyan-cat-face-number 1
-  "Select cat face number for console."
-  )
+  "Select cat face number for console.")
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
@@ -129,16 +128,25 @@ This can be t or nil."
 (defvar nyan-current-frame 0)
 
 (defconst +catface+ [
-        ["[]*" "[]#"]
+	; 0
+	["[]*" "[]#"]
+	; 1 (default)
         ["(*^ｰﾟ)" "( ^ｰ^)" "(^ｰ^ )" "(ﾟｰ^*)"]
+	; 2
         ["(´ω｀三 )" "( ´ω三｀ )" "( ´三ω｀ )" "( 三´ω｀)"
          "( 三´ω｀)" "( ´三ω｀ )" "( ´ω三｀ )" "(´ω｀三 )"]
+	; 3
         ["(´д｀;)" "( ´д`;)" "( ;´д`)" "(;´д` )"]
+	; 4
         ["(」・ω・)」" "(／・ω・)／" "(」・ω・)」" "(／・ω・)／"
          "(」・ω・)」" "(／・ω・)／" "(」・ω・)」" "＼(・ω・)／"]
+	; 5
         ["(＞ワ＜三　　　)" "(　＞ワ三＜　　)"
          "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
-         "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]])
+         "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]
+	; 6
+	["( ´∇｀)ฅ" "ฅ( ・∀・)ฅ" "ฅ(・∀・ )ฅ" "ฅ(´∇｀ )"]])
+
 
 (defun nyan-swich-anim-frame ()
   (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
@@ -154,7 +162,7 @@ This can be t or nil."
       (min 100 (+ 90
                   (* 3 (abs (- (/ 6 2)
                                (% (+ number nyan-current-frame)
-                                  6))))))
+                                  6))))))x
       (if (zerop (% number 2)) 80 'center)))
 
 (defun nyan-number-of-rainbows ()
