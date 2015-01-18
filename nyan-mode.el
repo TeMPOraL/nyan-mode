@@ -110,6 +110,9 @@ This can be t or nil."
 (defcustom nyan-cat-face-number 1
   "Select cat face number for console.")
 
+(defcustom nyan-outerspace-number 0
+  "Select outerspace number for console.")
+
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
 (defconst +nyan-cat-size+ 3)
@@ -126,6 +129,16 @@ This can be t or nil."
                                                       'xpm nil :ascent 95))
                                       '(1 2 3 4 5 6)))
 (defvar nyan-current-frame 0)
+
+(defconst +outerspace+ [
+	; 0
+	"-"
+	; 1
+	"░"
+	; 2
+	"▒"
+	; 3
+	"▒"])
 
 (defconst +catface+ [
 	; 0
@@ -199,7 +212,7 @@ This can be t or nil."
                                                                                                                 (if nyan-animate-nyancat 95 'center)))))))
     (dotimes (number outerspaces)
       (setq outerspace-string (concat outerspace-string
-                                      (propertize "-"
+                                      (propertize (aref +outerspace+ nyan-outerspace-number)
                                                   'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if nyan-animate-nyancat 95 'center))))))
     ;; Compute Nyan Cat string.
     (concat rainbow-string
