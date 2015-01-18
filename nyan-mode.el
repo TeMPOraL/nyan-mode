@@ -158,7 +158,7 @@ This can be t or nil."
          "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
          "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]
 	; 6
-	["( ´∇｀)ฅ" "ฅ( ・∀・)ฅ"  "ฅ(・∀・ )ฅ" "ฅ(´∇｀ )"]])
+	["( ´∇｀)ฅ" "ฅ( ・∀・)ฅ" "ฅ( Φ∀Φ)ฅ" "ฅ(Φ∀Φ )ฅ" "ฅ(・∀・ )ฅ" "ฅ(´∇｀ )"
 
 (defun nyan-swich-anim-frame ()
   (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
