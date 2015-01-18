@@ -147,7 +147,6 @@ This can be t or nil."
 	; 6
 	["( ´∇｀)ฅ" "ฅ( ・∀・)ฅ" "ฅ(・∀・ )ฅ" "ฅ(´∇｀ )"]])
 
-
 (defun nyan-swich-anim-frame ()
   (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
   (redraw-modeline))
@@ -162,7 +161,7 @@ This can be t or nil."
       (min 100 (+ 90
                   (* 3 (abs (- (/ 6 2)
                                (% (+ number nyan-current-frame)
-                                  6))))))x
+                                  6))))))
       (if (zerop (% number 2)) 80 'center)))
 
 (defun nyan-number-of-rainbows ()
