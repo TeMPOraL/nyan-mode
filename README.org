@@ -16,9 +16,8 @@ point from 0% to 100%.
   - Mind dumbing content included,
   - Experimental animation (M-x nyan-start-animation, M-x nyan-stop-animation),
   - Wavy rainbow (M-x set-variable <ret> nyan-wavy-trail <ret> t),
+  - Music, mplayer is needed (M-x nyan-start-music, M-x nyan-stop-music),
   - Customizable properties.
-
-NOT INCLUDED: music.
 
 ** Using Nyan Mode with custom modeline
 For those who were asking, or are planning to, [[http://friendfeed.com/amitp/b4097da0/nyan-mode-turn-your-emacs-into-nyanmacs][Amit Patel shared]]
