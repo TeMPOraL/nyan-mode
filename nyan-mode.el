@@ -147,7 +147,7 @@ This can be t or nil."
                                         '(1 2 3 4 5 6))))
 (defvar nyan-current-frame 0)
 
-(defconst +catface+ [
+(defconst +nyan-catface+ [
         ["[]*" "[]#"]
         ["(*^ｰﾟ)" "( ^ｰ^)" "(^ｰ^ )" "(ﾟｰ^*)"]
         ["(´ω｀三 )" "( ´ω三｀ )" "( ´三ω｀ )" "( 三´ω｀)"
@@ -184,15 +184,15 @@ This can be t or nil."
                (- nyan-bar-length +nyan-cat-size+))
           100)))
 
-(defun catface () (aref +catface+ nyan-cat-face-number))
+(defun nyan-catface () (aref +nyan-catface+ nyan-cat-face-number))
 
-(defun catface-index ()
+(defun nyan-catface-index ()
   (min (round (/ (* (round (* 100
                          (/ (- (float (point))
                                (float (point-min)))
                             (float (point-max)))))
-               (length (catface)))
-          100)) (- (length (catface)) 1)))
+               (length (nyan-catface)))
+          100)) (- (length (nyan-catface)) 1)))
 
 (defun nyan-create ()
   (let* ((rainbows (nyan-number-of-rainbows))
@@ -200,7 +200,7 @@ This can be t or nil."
          (rainbow-string "")
          (xpm-support (image-type-available-p 'xpm))
          (nyancat-string (propertize
-                          (aref (catface) (catface-index))
+                          (aref (nyan-catface) (nyan-catface-index))
                           'display (nyan-get-anim-frame)))
          (outerspace-string ""))
     (dotimes (number rainbows)
