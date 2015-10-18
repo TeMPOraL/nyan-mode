@@ -1,20 +1,16 @@
 ;;; nyan-mode.el --- Nyan Cat shows position in current buffer in mode-line.
-;;;
-;;; Nyanyanyanyanyanyanya!
-;;;
-;;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
-;;; URL: http://nyan-mode.buildsomethingamazing.com
-;;; Version: 0.2
-;;; Keywords: nyan, cat, lulz, pop tart cat, build something amazing
-;;;
-;;; Inspired by (and in few places copied from) sml-modeline.el,
-;;; written by Lennart Borgman
-;;; See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; LICENSE
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; Nyanyanyanyanyanyanya!
+
+;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
+;; URL: https://github.com/TeMPOraL/nyan-mode/
+;; Version: 1.0.0
+;; Keywords: nyan, cat, lulz, pop tart cat, build something amazing
+
+;; This file is not part of GNU Emacs.
+
+;; ...yet. ;).
+
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
@@ -29,14 +25,25 @@
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Some TODOs
-;;; * Investigate why wavy rainbow didn't work on Antoszka's computer.
-;;; * Refactor-out :set lambdas in customs if possible.
-;;; * MAYBE add something to protect users from going to 0 with nyanbar width?
-;;; * Add credits for used images.
+;;; Commentary:
+
+;; To activate, just load and put `(nyan-mode 1)' in your init file.
+
+;; Contributions and feature requests welcome!
+
+;; Inspired by (and in few places copied from) sml-modeline.el,
+;; written by Lennart Borgman
+;; See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
+
+;;; History:
+
+;; Started as a totally random idea back in August 2011.
+
+;; The homepage at http://nyan-mode.buildsomethingamazing.com died somewhen in 2014/2015 because reasons.
+;; I might get the domain back one day.
+
+;;; Code:
 (defgroup nyan nil
   "Customization group for `nyan-mode'."
   :group 'frames)
