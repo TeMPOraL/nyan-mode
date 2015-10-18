@@ -1,5 +1,9 @@
 * Nyan Mode - Turn your Emacs into Nyanmacs! :)
 
+[[https://github.com/TeMPOraL/nyan-mode][file:https://badge.fury.io/gh/TeMPOraL%2Fnyan-mode.svg]]
+[[http://www.nyan.cat/][file:https://img.shields.io/badge/nyan-nyan-ff00ff.svg]]
+[[https://melpa.org/#/nyan-mode][file:https://melpa.org/packages/nyan-mode-badge.svg]]
+
  *WARNING, MIND DUMBING CONTENT INSIDE.*
 
 "Nyan-mode. It's things like this that make me proud to be an emacs user." - [[http://twitter.com/#!/mitchellh/status/104931263479156736][mitchellh]]
@@ -28,6 +32,9 @@ He basically changed the mode-line-format to include:
   (:eval (list (nyan-create)))  
 #+end_src
 
+** Note for Powerline users
+
+
 ** Known issues
 It's my second attempt to write a minor mode in Emacs, so there will
 definiely be some bugs.
@@ -53,4 +60,21 @@ See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-m
 
 For animated Nyan Cat, I used frames [[http://media.photobucket.com/image/nyan%20cat%20sprites/DryBowser455/th_NyanCatSprite.png?t=1304659408][by DryBowser455]].
 
-Nyanyanyanyanyanyanya!
+** Other editors
+For many years only the [[https://www.gnu.org/software/emacs/][One True Editor]] was blessed with the presence
+of the Nyan Cat. Since its inception, however, daring souls have brought
+Nyanness to the lands of Lesser Editors.
+
+Here are the examples I've tracked down so far:
+
+- Vim - nefo-mi's [[https://github.com/nefo-mi/nyan-modoki.vim][nyan-modoki.vim]] (text-only, it seems)
+- Vim - edvb54's [[https://github.com/edvb54/catium.vim][catium.vim]] (also text, apparently)
+- Sublime Text - wiggin15's [[https://github.com/wiggin15/SublimeNyan][SublimeNyan]]
+
+If you've seen others in the wild, please submit.
+
+** Related
+
+Check out Aaron Miller's [[https://github.com/aaron-em/weatherline-mode.el][weatherline.el]], partially inspired by Nyan Mode.
+
+Nyanyanyanyanyanyanya! ♬ ♫ ♪ ♩
