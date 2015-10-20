@@ -2,7 +2,9 @@
 
 [[https://github.com/TeMPOraL/nyan-mode][file:https://badge.fury.io/gh/TeMPOraL%2Fnyan-mode.svg]]
 [[http://www.nyan.cat/][file:https://img.shields.io/badge/nyan-nyan-ff00ff.svg]]
+[[https://stable.melpa.org/#/nyan-mode][file:https://stable.melpa.org/packages/nyan-mode-badge.svg]]
 [[https://melpa.org/#/nyan-mode][file:https://melpa.org/packages/nyan-mode-badge.svg]]
+
 
  *WARNING, MIND DUMBING CONTENT INSIDE.*
 
