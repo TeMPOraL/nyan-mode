@@ -4,8 +4,8 @@
 
 ;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;; URL: https://github.com/TeMPOraL/nyan-mode/
-;; Version: 1.0.1
-;; Keywords: nyan, cat, lulz, pop tart cat, build something amazing
+;; Version: 1.1.0
+;; Keywords: nyan, cat, lulz, scrolling, pop tart cat, build something amazing
 
 ;; This file is not part of GNU Emacs.
 
@@ -32,11 +32,12 @@
 
 ;; Contributions and feature requests welcome!
 
-;; Inspired by (and in few places copied from) sml-modeline.el,
-;; written by Lennart Borgman
+;; Inspired by (and in few places copied from) sml-modeline.el written by Lennart Borgman.
 ;; See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
 
 ;;; History:
+
+;; 2016-04-23 - introduced click-to-scroll feature.
 
 ;; Started as a totally random idea back in August 2011.
 
@@ -44,6 +45,9 @@
 ;; I might get the domain back one day.
 
 ;;; Code:
+
+(eval-when-compile (require 'cl))
+
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
 (defconst +nyan-cat-size+ 3)
@@ -54,7 +58,7 @@
 
 (defconst +nyan-music+ (concat +nyan-directory+ "mus/nyanlooped.mp3"))
 
-(defconst +nyan-modeline-help-string+ "Test help string.")
+(defconst +nyan-modeline-help-string+ "Nyanyanya!\nmouse-1: Scroll buffer position")
 
 (defvar nyan-old-car-mode-line-position nil)
 
@@ -204,9 +208,15 @@ This can be t or nil."
                (length (nyan-catface)))
                  100)) (- (length (nyan-catface)) 1)))
 
-(defun nyan-test ()
+(defun nyan-scroll-buffer (percentage buffer)
   (interactive)
-  (message "nyan test - %s" (mouse-position)))
+  (with-current-buffer buffer
+    (goto-char (floor (* percentage (point-max))))))
+
+(defun nyan-add-scroll-handler (string percentage buffer)
+  (lexical-let ((percentage percentage)
+                (buffer buffer))
+    (propertize string 'keymap `(keymap (mode-line keymap (down-mouse-1 . ,(lambda () (interactive) (nyan-scroll-buffer percentage buffer))))))))
 
 (defun nyan-create ()
   (let* ((rainbows (nyan-number-of-rainbows))
@@ -216,27 +226,31 @@ This can be t or nil."
          (nyancat-string (propertize
                           (aref (nyan-catface) (nyan-catface-index))
                           'display (nyan-get-anim-frame)))
-         (outerspace-string ""))
-    (dotimes (number rainbows)
-      (setq rainbow-string (concat rainbow-string
-                                   (if xpm-support
-                                     (propertize "|"
-                                                 'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
-                                                                                                                       (nyan-wavy-rainbow-ascent number))
-                                                                                                                  (if nyan-animate-nyancat 95 'center))))
-                                     "|"))))
+         (outerspace-string "")
+         (buffer (current-buffer)))
+     (dotimes (number rainbows)
+       (setq rainbow-string (concat rainbow-string
+                                    (nyan-add-scroll-handler
+                                     (if xpm-support
+                                         (propertize "|"
+                                                     'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
+                                                                                                                           (nyan-wavy-rainbow-ascent number))
+                                                                                                                      (if nyan-animate-nyancat 95 'center))))
+                                       "|")
+                                     (/ (float number) nyan-bar-length) buffer))))
     (dotimes (number outerspaces)
       (setq outerspace-string (concat outerspace-string
-                                      (if xpm-support
-                                        (propertize "-"
-                                                    'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if nyan-animate-nyancat 95 'center)))
-                                        "-"))))
+                                      (nyan-add-scroll-handler
+                                       (if xpm-support
+                                           (propertize "-"
+                                                       'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if nyan-animate-nyancat 95 'center)))
+                                         "-")
+                                       (/ (float (+ rainbows +nyan-cat-size+ number)) nyan-bar-length) buffer))))
     ;; Compute Nyan Cat string.
     (propertize (concat rainbow-string
-                         nyancat-string
-                         outerspace-string)
-                            'help-echo +nyan-modeline-help-string+
-                            'keymap `(keymap (mode-line keymap (down-mouse-1 . nyan-test))))))
+                        nyancat-string
+                        outerspace-string)
+                'help-echo +nyan-modeline-help-string+)))
 
 ;;;###autoload
 (define-minor-mode nyan-mode
@@ -258,12 +272,3 @@ option `scroll-bar-mode'."
 (provide 'nyan-mode)
 
 ;;; nyan-mode.el ends here
-
-;; (keymap
-;;  (mode-line keymap
-;;             (down-mouse-1 keymap
-;;                           (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
-;;                                               (:toggle . column-number-mode))
-;;                           (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
-;;                                             (:toggle . line-number-mode))
-;;                           "Toggle Line and Column Number Display")))
