@@ -20,10 +20,23 @@ point from 0% to 100%.
 
 ** Features
   - Mind dumbing content included,
-  - Experimental animation (M-x nyan-start-animation, M-x nyan-stop-animation),
-  - Wavy rainbow (M-x set-variable <ret> nyan-wavy-trail <ret> t),
-  - Music, mplayer is needed (M-x nyan-start-music, M-x nyan-stop-music),
+  - Experimental animation (=M-x nyan-start-animation=, =M-x nyan-stop-animation=),
+  - Wavy rainbow (=M-x set-variable <ret> nyan-wavy-trail <ret> t=),
+  - Music, mplayer is needed (=M-x nyan-start-music=, =M-x nyan-stop-music=) (thanks, George Leontiev!),
   - Customizable properties.
+  - *NEW!* You can customize the minimum window width below which Nyan Mode will be disabled.
+
+** Customizations
+
+   - =nyan-animate-nyancat= - =t= to have it animated, =nil= for a static version.
+   - =nyan-animation-frame-interval= - number of seconds between animation frames. Accepts fractional values.
+   - =nyan-bar-length= - length of nyan-mode bar, in 8px-wide units.
+   - =nyan-cat-face-number= - choose a cat face for the console mode.
+   - =nyan-wavy-trail= - =t= to make the trail wavy; works even better when animation is enabled!
+   - =nyan-minimum-window-width= - minimum width of the window, below
+     which Nyan Mode will be disabled. This is important because Nyan
+     Mode will otherwise push out more relevant information from the
+     modelilne.
 
 ** Using Nyan Mode with custom modeline
 For those who were asking, or are planning to, [[http://friendfeed.com/amitp/b4097da0/nyan-mode-turn-your-emacs-into-nyanmacs][Amit Patel shared]]
@@ -54,9 +67,11 @@ download a proper DLL and put it into emacs bin/ folder. To see which
 DLL is needed, do: M-x describe-variable <ret> image-library-alist
 <ret>.
 
-Customizing nyan-animate-nyancat is broken; don't do it.
++Customizing nyan-animate-nyancat is broken; don't do it.+
+I think it works now; please report issues if there are problems with it.
 
 ** Credits
+Thanks to everyone contributing patches, bug repots and ideas! The Emacs world is forever in your debt!
 
 Code and idea inspired by sml-modeline.el, written by Lennart Borgman.
 See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
@@ -79,5 +94,8 @@ If you've seen others in the wild, please submit.
 ** Related
 
 Check out Aaron Miller's [[https://github.com/aaron-em/weatherline-mode.el][weatherline.el]], partially inspired by Nyan Mode.
+
+Also check out [[https://github.com/wasamasa/zone-nyan][zone-nyan]] by Vasilij Schneidermann if you want the Nyan
+Cat to visit your Emacs when you step away from the keyboard!
 
 Nyanyanyanyanyanyanya! ♬ ♫ ♪ ♩

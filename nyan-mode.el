@@ -4,7 +4,7 @@
 
 ;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;; URL: https://github.com/TeMPOraL/nyan-mode/
-;; Version: 1.0.1
+;; Version: 1.0.2
 ;; Keywords: nyan, cat, lulz, pop tart cat, build something amazing
 
 ;; This file is not part of GNU Emacs.
@@ -108,6 +108,14 @@
     (delete-process nyan-music-process)
     (setq nyan-music-process nil)))
 
+(defcustom nyan-minimum-window-width 64
+  "Determines the minimum width of the window, below which nyan-mode will not be displayed.
+This is important because nyan-mode will push out all informations from small windows."
+  :set (lambda (sym val)
+         (set-default sym val)
+         (nyan-refresh))
+  :group 'nyan)
+
 ;;; FIXME bug, doesn't work for antoszka.
 (defcustom nyan-wavy-trail nil
   "If enabled, Nyan Cat's rainbow trail will be wavy."
@@ -203,32 +211,34 @@ This can be t or nil."
           100)) (- (length (nyan-catface)) 1)))
 
 (defun nyan-create ()
-  (let* ((rainbows (nyan-number-of-rainbows))
-         (outerspaces (- nyan-bar-length rainbows +nyan-cat-size+))
-         (rainbow-string "")
-         (xpm-support (image-type-available-p 'xpm))
-         (nyancat-string (propertize
-                          (aref (nyan-catface) (nyan-catface-index))
-                          'display (nyan-get-anim-frame)))
-         (outerspace-string ""))
-    (dotimes (number rainbows)
-      (setq rainbow-string (concat rainbow-string
-                                   (if xpm-support
-                                     (propertize "|"
-                                                 'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
-                                                                                                                       (nyan-wavy-rainbow-ascent number))
-                                                                                                                  (if nyan-animate-nyancat 95 'center))))
-                                     "|"))))
-    (dotimes (number outerspaces)
-      (setq outerspace-string (concat outerspace-string
-                                      (if xpm-support
-                                        (propertize "-"
-                                                    'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if nyan-animate-nyancat 95 'center)))
-                                        "-"))))
-    ;; Compute Nyan Cat string.
-    (concat rainbow-string
-            nyancat-string
-            outerspace-string)))
+  (if (< (window-width) nyan-minimum-window-width)
+      ""                                ; disabled for too small windows
+   (let* ((rainbows (nyan-number-of-rainbows))
+          (outerspaces (- nyan-bar-length rainbows +nyan-cat-size+))
+          (rainbow-string "")
+          (xpm-support (image-type-available-p 'xpm))
+          (nyancat-string (propertize
+                           (aref (nyan-catface) (nyan-catface-index))
+                           'display (nyan-get-anim-frame)))
+          (outerspace-string ""))
+     (dotimes (number rainbows)
+       (setq rainbow-string (concat rainbow-string
+                                    (if xpm-support
+                                        (propertize "|"
+                                                    'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
+                                                                                                                          (nyan-wavy-rainbow-ascent number))
+                                                                                                                     (if nyan-animate-nyancat 95 'center))))
+                                      "|"))))
+     (dotimes (number outerspaces)
+       (setq outerspace-string (concat outerspace-string
+                                       (if xpm-support
+                                           (propertize "-"
+                                                       'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if nyan-animate-nyancat 95 'center)))
+                                         "-"))))
+     ;; Compute Nyan Cat string.
+     (concat rainbow-string
+             nyancat-string
+             outerspace-string))))
 
 ;;;###autoload
 (define-minor-mode nyan-mode
