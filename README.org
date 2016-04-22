@@ -19,6 +19,7 @@ Cat should go from left to right in your mode-line, as you move your
 point from 0% to 100%.
 
 ** Features
+  - *NEW* You can scroll the buffer by clicking in the Nyan Cat area!
   - Mind dumbing content included,
   - Experimental animation (M-x nyan-start-animation, M-x nyan-stop-animation),
   - Wavy rainbow (M-x set-variable <ret> nyan-wavy-trail <ret> t),
@@ -54,7 +55,7 @@ download a proper DLL and put it into emacs bin/ folder. To see which
 DLL is needed, do: M-x describe-variable <ret> image-library-alist
 <ret>.
 
-Customizing nyan-animate-nyancat is broken; don't do it.
+Customizing nyan-animate-nyancat is (probably) still broken; don't do it.
 
 ** Credits
 
