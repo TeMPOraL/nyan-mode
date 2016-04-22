@@ -54,6 +54,8 @@
 
 (defconst +nyan-music+ (concat +nyan-directory+ "mus/nyanlooped.mp3"))
 
+(defconst +nyan-modeline-help-string+ "Test help string.")
+
 (defvar nyan-old-car-mode-line-position nil)
 
 (defgroup nyan nil
@@ -200,7 +202,11 @@ This can be t or nil."
                                (float (point-min)))
                             (float (point-max)))))
                (length (nyan-catface)))
-          100)) (- (length (nyan-catface)) 1)))
+                 100)) (- (length (nyan-catface)) 1)))
+
+(defun nyan-test ()
+  (interactive)
+  (message "nyan test - %s" (mouse-position)))
 
 (defun nyan-create ()
   (let* ((rainbows (nyan-number-of-rainbows))
@@ -226,9 +232,11 @@ This can be t or nil."
                                                     'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if nyan-animate-nyancat 95 'center)))
                                         "-"))))
     ;; Compute Nyan Cat string.
-    (concat rainbow-string
-            nyancat-string
-            outerspace-string)))
+    (propertize (concat rainbow-string
+                         nyancat-string
+                         outerspace-string)
+                            'help-echo +nyan-modeline-help-string+
+                            'keymap `(keymap (mode-line keymap (down-mouse-1 . nyan-test))))))
 
 ;;;###autoload
 (define-minor-mode nyan-mode
@@ -250,3 +258,12 @@ option `scroll-bar-mode'."
 (provide 'nyan-mode)
 
 ;;; nyan-mode.el ends here
+
+;; (keymap
+;;  (mode-line keymap
+;;             (down-mouse-1 keymap
+;;                           (column-number-mode menu-item "Display Column Numbers" column-number-mode :help "Toggle displaying column numbers in the mode-line" :button
+;;                                               (:toggle . column-number-mode))
+;;                           (line-number-mode menu-item "Display Line Numbers" line-number-mode :help "Toggle displaying line numbers in the mode-line" :button
+;;                                             (:toggle . line-number-mode))
+;;                           "Toggle Line and Column Number Display")))
