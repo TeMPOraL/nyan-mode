@@ -44,6 +44,18 @@
 ;; I might get the domain back one day.
 
 ;;; Code:
+(defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
+
+(defconst +nyan-cat-size+ 3)
+
+(defconst +nyan-cat-image+ (concat +nyan-directory+ "img/nyan.xpm"))
+(defconst +nyan-rainbow-image+ (concat +nyan-directory+ "img/rainbow.xpm"))
+(defconst +nyan-outerspace-image+ (concat +nyan-directory+ "img/outerspace.xpm"))
+
+(defconst +nyan-music+ (concat +nyan-directory+ "mus/nyanlooped.mp3"))
+
+(defvar nyan-old-car-mode-line-position nil)
+
 (defgroup nyan nil
   "Customization group for `nyan-mode'."
   :group 'frames)
@@ -83,13 +95,18 @@
     (setq nyan-animate-nyancat nil)))
 
 ;; mplayer needs to be installed for that
+(defvar nyan-music-process nil)
+
 (defun nyan-start-music ()
   (interactive)
-  (start-process-shell-command "nyan-music" "nyan-music" (concat "mplayer " +nyan-music+ " -loop 0")))
+  (unless nyan-music-process
+    (setq nyan-music-process (start-process-shell-command "nyan-music" "nyan-music" (concat "mplayer " +nyan-music+ " -loop 0")))))
  
 (defun nyan-stop-music ()
   (interactive)
-  (kill-process "nyan-music"))
+  (when nyan-music-process
+    (delete-process nyan-music-process)
+    (setq nyan-music-process nil)))
 
 ;;; FIXME bug, doesn't work for antoszka.
 (defcustom nyan-wavy-trail nil
@@ -126,16 +143,6 @@ This can be t or nil."
   "Select cat face number for console."
   )
 
-(defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
-
-(defconst +nyan-cat-size+ 3)
-
-(defconst +nyan-cat-image+ (concat +nyan-directory+ "img/nyan.xpm"))
-(defconst +nyan-rainbow-image+ (concat +nyan-directory+ "img/rainbow.xpm"))
-(defconst +nyan-outerspace-image+ (concat +nyan-directory+ "img/outerspace.xpm"))
-
-(defconst +nyan-music+ (concat +nyan-directory+ "mus/nyanlooped.mp3"))
-
 ;;; Load images of Nyan Cat an it's rainbow.
 (defvar nyan-cat-image (if (image-type-available-p 'xpm)
                          (create-image +nyan-cat-image+ 'xpm nil :ascent 'center)))
@@ -158,6 +165,7 @@ This can be t or nil."
         ["(＞ワ＜三　　　)" "(　＞ワ三＜　　)"
          "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
          "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]])
+
 
 (defun nyan-swich-anim-frame ()
   (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
@@ -221,8 +229,6 @@ This can be t or nil."
     (concat rainbow-string
             nyancat-string
             outerspace-string)))
-
-(defvar nyan-old-car-mode-line-position nil)
 
 ;;;###autoload
 (define-minor-mode nyan-mode
