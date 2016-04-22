@@ -4,7 +4,7 @@
 
 ;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;; URL: https://github.com/TeMPOraL/nyan-mode/
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Keywords: nyan, cat, lulz, pop tart cat, build something amazing
 
 ;; This file is not part of GNU Emacs.
