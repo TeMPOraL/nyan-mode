@@ -28,6 +28,10 @@
 
 ;;; Commentary:
 
+;; NEW! You can now customize the minimum window width
+;; below which the nyan-mode will be disabled, so that more important
+;; information can be shown in the modeline.
+
 ;; To activate, just load and put `(nyan-mode 1)' in your init file.
 
 ;; Contributions and feature requests welcome!
