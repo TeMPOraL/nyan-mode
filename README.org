@@ -25,6 +25,8 @@ point from 0% to 100%.
   - Music, mplayer is needed (=M-x nyan-start-music=, =M-x nyan-stop-music=) (thanks, George Leontiev!),
   - Customizable properties.
   - *NEW!* You can customize the minimum window width below which Nyan Mode will be disabled.
+  - *NEW* You can scroll the buffer by clicking in the Nyan Cat area!
+
 
 ** Customizations
 
@@ -44,7 +46,7 @@ some tips on how to make nyan-mode work with custom modeline.
 
 He basically changed the mode-line-format to include:
 #+begin_src emacs-lisp
-  (:eval (list (nyan-create)))  
+  (:eval (list (nyan-create)))
 #+end_src
 
 ** Note for Powerline users
