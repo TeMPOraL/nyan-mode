@@ -4,7 +4,7 @@
 
 ;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;; URL: https://github.com/TeMPOraL/nyan-mode/
-;; Version: 1.1.0
+;; Version: 1.1.1
 ;; Keywords: nyan, cat, lulz, scrolling, pop tart cat, build something amazing
 
 ;; This file is not part of GNU Emacs.
@@ -187,6 +187,10 @@ This can be t or nil."
                            "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
                            "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]])
 
+(defun nyan-toggle-wavy-trail ()
+  "Toggle the trail to look more like the original Nyan Cat animation."
+  (interactive)
+  (setq nyan-wavy-trail (not nyan-wavy-trail)))
 
 (defun nyan-swich-anim-frame ()
   (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
