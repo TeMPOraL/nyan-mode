@@ -4,7 +4,7 @@
 [[http://www.nyan.cat/][file:https://img.shields.io/badge/nyan-nyan-ff00ff.svg]]
 [[https://stable.melpa.org/#/nyan-mode][file:https://stable.melpa.org/packages/nyan-mode-badge.svg]]
 [[https://melpa.org/#/nyan-mode][file:https://melpa.org/packages/nyan-mode-badge.svg]]
-[[https://doi.org/10.5281/zenodo.164185][file:https://zenodo.org/badge/DOI/10.5281/zenodo.164185.svg)]]
+[[https://doi.org/10.5281/zenodo.164185][file:https://zenodo.org/badge/DOI/10.5281/zenodo.164185.svg]]
 
  *WARNING, MIND DUMBING CONTENT INSIDE.*
 
