@@ -83,6 +83,7 @@
 
 (defcustom nyan-animation-frame-interval 0.2
   "Number of seconds between animation frames."
+  :type 'float
   :set (lambda (sym val)
          (set-default sym val)
          (nyan-refresh))
@@ -124,6 +125,7 @@
 (defcustom nyan-minimum-window-width 64
   "Determines the minimum width of the window, below which nyan-mode will not be displayed.
 This is important because nyan-mode will push out all informations from small windows."
+  :type 'integer
   :set (lambda (sym val)
          (set-default sym val)
          (nyan-refresh))
@@ -142,6 +144,7 @@ This is important because nyan-mode will push out all informations from small wi
 (defcustom nyan-bar-length 32
   "Length of Nyan Cat bar in units; each unit is equal to an 8px
   image. Minimum of 3 units are required for Nyan Cat."
+  :type 'integer
   :set (lambda (sym val)
          (set-default sym val)
          (nyan-refresh))
@@ -162,6 +165,8 @@ This can be t or nil."
 
 (defcustom nyan-cat-face-number 1
   "Select cat face number for console."
+  :type 'integer
+  :group 'nyan
   )
 
 ;;; Load images of Nyan Cat an it's rainbow.
