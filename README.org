@@ -16,7 +16,7 @@
 "Everything that's wrong (or right) with Emacs." - [[https://youtu.be/NBArWrn6FnY?t=756][wasamasa]]
 #+END_QUOTE
 
-Nyanmacs is expanding!! [[http://temporal.pr0.pl/devblog/2011/08/25/introducing-nyan-mode-el-turn-your-emacs-into-nyanmacs/][Read the story so far]]! :).
+Nyanmacs is expanding!! [[http://jacek.zlydach.pl/blog/2011-08-25-introducing-nyan-mode-el-turn-your-emacs-into-nyanmacs.html][Read the story so far]]! :).
 
 [[file:screenshot.png]]
 
