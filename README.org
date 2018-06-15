@@ -97,6 +97,8 @@ Here are the examples I've tracked down so far:
 - Vim - nefo-mi's [[https://github.com/nefo-mi/nyan-modoki.vim][nyan-modoki.vim]] (text-only, it seems)
 - Vim - edvb54's [[https://github.com/edvb54/catium.vim][catium.vim]] (also text, apparently)
 - Sublime Text - wiggin15's [[https://github.com/wiggin15/SublimeNyan][SublimeNyan]]
+- Atom - dz's [[https://github.com/dz/atom-nyancat][atom-nyancat]]
+- qutebrowser - [[https://github.com/jgkamat/qutenyan][qutenyan]]
 
 If you've seen others in the wild, please submit.
 
