@@ -57,10 +57,6 @@ He changed his mode-line-format to appear like the following:
        ))
 #+end_src
 
-** Note for Powerline users
-Nyan Mode apparently breaks it. I might get around to fixing that
-eventually. If you know a way to do it, don't hesitate to contribute :).
-
 ** Known issues
 It's my second attempt to write a minor mode in Emacs, so there will
 definiely be some bugs.
