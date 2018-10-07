@@ -108,13 +108,25 @@
     (setq nyan-animation-timer nil)
     (setq nyan-animate-nyancat nil)))
 
-;; mplayer needs to be installed for that
+(defcustom nyan-music-player "mplayer"
+  "Change a music player for NyanCat."
+  :type '(choice (const "mplayer")
+		 (const "mpv"))
+  :group 'nyan)
+
 (defvar nyan-music-process nil)
+
+(defun nyan--start-music-command ()
+  (cond ((string-equal nyan-music-player "mplayer")
+	 (concat "mplayer " +nyan-music+ " -loop 0"))
+	((string-equal nyan-music-player "mpv")
+	 (concat "mpv " +nyan-music+ " -loop 0"))
+	(t (error "Unknown music player"))))
 
 (defun nyan-start-music ()
   (interactive)
   (unless nyan-music-process
-    (setq nyan-music-process (start-process-shell-command "nyan-music" "nyan-music" (concat "mplayer " +nyan-music+ " -loop 0")))))
+    (setq nyan-music-process (start-process-shell-command "nyan-music" "nyan-music" (nyan--start-music-command)))))
 
 (defun nyan-stop-music ()
   (interactive)
