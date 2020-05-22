@@ -91,23 +91,6 @@
 
 (defvar nyan-animation-timer nil)
 
-(defun nyan-start-animation ()
-  (interactive)
-  (when (not (and nyan-animate-nyancat
-		  nyan-animation-timer))
-    (setq nyan-animation-timer (run-at-time "1 sec"
-                                            nyan-animation-frame-interval
-                                            'nyan-swich-anim-frame))
-    (setq nyan-animate-nyancat t)))
-
-(defun nyan-stop-animation ()
-  (interactive)
-  (when (and nyan-animate-nyancat
-	     nyan-animation-timer)
-    (cancel-timer nyan-animation-timer)
-    (setq nyan-animation-timer nil)
-    (setq nyan-animate-nyancat nil)))
-
 ;; mplayer needs to be installed for that
 (defvar nyan-music-process nil)
 
@@ -157,9 +140,6 @@ This can be t or nil."
                  (const :tag "Disabled" nil))
   :set (lambda (sym val)
          (set-default sym val)
-         (if val
-             (nyan-start-animation)
-           (nyan-stop-animation))
          (nyan-refresh))
   :group 'nyan)
 
@@ -289,9 +269,16 @@ option `scroll-bar-mode'."
   :group 'nyan
   (if nyan-mode
       (progn
+        (when nyan-animate-nyancat
+          (setq nyan-animation-timer (run-at-time "1 sec"
+                                                  nyan-animation-frame-interval
+                                                  'nyan-swich-anim-frame)))
         (unless nyan-old-car-mode-line-position
           (setq nyan-old-car-mode-line-position (car mode-line-position)))
         (setcar mode-line-position '(:eval (list (nyan-create)))))
+    (when nyan-animation-timer
+      (cancel-timer nyan-animation-timer)
+      (setq nyan-animation-timer nil))
     (setcar mode-line-position nyan-old-car-mode-line-position)))
 
 
