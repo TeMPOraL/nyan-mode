@@ -74,7 +74,8 @@
   :group 'frames)
 
 (defun nyan-refresh ()
-  "Refresh after option changes if loaded."
+  "Refresh nyan mode.
+Intended to be called when customizations were changed, to reapply them immediately."
   (when (featurep 'nyan-mode)
     (when (and (boundp 'nyan-mode)
                nyan-mode)
@@ -91,39 +92,25 @@
 
 (defvar nyan-animation-timer nil)
 
+(defun nyan--is-animating-p ()
+  "T if animating, NIL otherwise."
+  (timerp nyan-animation-timer))
+
 (defun nyan-start-animation ()
   (interactive)
-  (when (not (and nyan-animate-nyancat
-		  nyan-animation-timer))
+  (unless (nyan--is-animating-p)
     (setq nyan-animation-timer (run-at-time "1 sec"
                                             nyan-animation-frame-interval
-                                            'nyan-swich-anim-frame))
-    (setq nyan-animate-nyancat t)))
+                                            'nyan-swich-anim-frame))))
 
 (defun nyan-stop-animation ()
   (interactive)
-  (when (and nyan-animate-nyancat
-	     nyan-animation-timer)
+  (when (nyan--is-animating-p)
     (cancel-timer nyan-animation-timer)
-    (setq nyan-animation-timer nil)
-    (setq nyan-animate-nyancat nil)))
-
-;; mplayer needs to be installed for that
-(defvar nyan-music-process nil)
-
-(defun nyan-start-music ()
-  (interactive)
-  (unless nyan-music-process
-    (setq nyan-music-process (start-process-shell-command "nyan-music" "nyan-music" (concat "mplayer " +nyan-music+ " -loop 0")))))
-
-(defun nyan-stop-music ()
-  (interactive)
-  (when nyan-music-process
-    (delete-process nyan-music-process)
-    (setq nyan-music-process nil)))
+    (setq nyan-animation-timer nil)))
 
 (defcustom nyan-minimum-window-width 64
-  "Determines the minimum width of the window, below which nyan-mode will not be displayed.
+  "Minimum width of the window, below which nyan-mode will not be displayed.
 This is important because nyan-mode will push out all informations from small windows."
   :type 'integer
   :set (lambda (sym val)
@@ -142,8 +129,9 @@ This is important because nyan-mode will push out all informations from small wi
   :group 'nyan)
 
 (defcustom nyan-bar-length 32
-  "Length of Nyan Cat bar in units; each unit is equal to an 8px
-  image. Minimum of 3 units are required for Nyan Cat."
+  "Length of Nyan Cat bar in units.
+Each unit is equal to an 8px image.
+Minimum of 3 units are required for Nyan Cat."
   :type 'integer
   :set (lambda (sym val)
          (set-default sym val)
@@ -155,6 +143,8 @@ This is important because nyan-mode will push out all informations from small wi
 This can be t or nil."
   :type '(choice (const :tag "Enabled" t)
                  (const :tag "Disabled" nil))
+  ;; FIXME: Starting an animation timer on defcustom isn't a good idea; this needs to, at best, maybe start/stop a timer iff the mode is on,
+  ;; otherwise just set a flag. -- Jacek Złydach, 2020-05-26
   :set (lambda (sym val)
          (set-default sym val)
          (if val
@@ -202,12 +192,12 @@ This can be t or nil."
   (redraw-modeline))
 
 (defun nyan-get-anim-frame ()
-  (if nyan-animate-nyancat
+  (if (nyan--is-animating-p)
       (nth nyan-current-frame nyan-animation-frames)
     nyan-cat-image))
 
 (defun nyan-wavy-rainbow-ascent (number)
-  (if nyan-animate-nyancat
+  (if (nyan--is-animating-p)
       (min 100 (+ 90
                   (* 3 (abs (- (/ 6 2)
                                (% (+ number nyan-current-frame)
@@ -222,7 +212,8 @@ This can be t or nil."
                (- nyan-bar-length +nyan-cat-size+))
             100)))
 
-(defun nyan-catface () (aref +nyan-catface+ nyan-cat-face-number))
+(defun nyan-catface ()
+  (aref +nyan-catface+ nyan-cat-face-number))
 
 (defun nyan-catface-index ()
   (min (round (/ (* (round (* 100
@@ -233,16 +224,19 @@ This can be t or nil."
                  100)) (- (length (nyan-catface)) 1)))
 
 (defun nyan-scroll-buffer (percentage buffer)
+  "Move point `BUFFER' to `PERCENTAGE' percent in the buffer."
   (interactive)
   (with-current-buffer buffer
     (goto-char (floor (* percentage (point-max))))))
 
 (defun nyan-add-scroll-handler (string percentage buffer)
+  "Propertize `STRING' to scroll `BUFFER' to `PERCENTAGE' on click."
   (lexical-let ((percentage percentage)
                 (buffer buffer))
     (propertize string 'keymap `(keymap (mode-line keymap (down-mouse-1 . ,(lambda () (interactive) (nyan-scroll-buffer percentage buffer))))))))
 
 (defun nyan-create ()
+  "Return the Nyan Cat indicator to be inserted into mode line."
   (if (< (window-width) nyan-minimum-window-width)
       ""                                ; disabled for too small windows
     (let* ((rainbows (nyan-number-of-rainbows))
@@ -261,7 +255,7 @@ This can be t or nil."
                                           (propertize "|"
                                                       'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
                                                                                                                             (nyan-wavy-rainbow-ascent number))
-                                                                                                                       (if nyan-animate-nyancat 95 'center))))
+                                                                                                                       (if (nyan--is-animating-p) 95 'center))))
                                         "|")
                                       (/ (float number) nyan-bar-length) buffer))))
       (dotimes (number outerspaces)
@@ -269,7 +263,7 @@ This can be t or nil."
                                         (nyan-add-scroll-handler
                                          (if xpm-support
                                              (propertize "-"
-                                                         'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if nyan-animate-nyancat 95 'center)))
+                                                         'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if (nyan--is-animating-p) 95 'center)))
                                            "-")
                                          (/ (float (+ rainbows +nyan-cat-size+ number)) nyan-bar-length) buffer))))
       ;; Compute Nyan Cat string.
@@ -277,6 +271,25 @@ This can be t or nil."
                           nyancat-string
                           outerspace-string)
                   'help-echo +nyan-modeline-help-string+))))
+
+
+;;; Music handling.
+
+;; mplayer needs to be installed for that
+(defvar nyan-music-process nil)
+
+(defun nyan-start-music ()
+  (interactive)
+  (unless nyan-music-process
+    (setq nyan-music-process (start-process-shell-command "nyan-music" "nyan-music" (concat "mplayer " +nyan-music+ " -loop 0")))))
+
+(defun nyan-stop-music ()
+  (interactive)
+  (when nyan-music-process
+    (delete-process nyan-music-process)
+    (setq nyan-music-process nil)))
+
+
 
 ;;;###autoload
 (define-minor-mode nyan-mode
@@ -287,12 +300,18 @@ Note: If you turn this mode on then you probably want to turn off
 option `scroll-bar-mode'."
   :global t
   :group 'nyan
-  (if nyan-mode
-      (progn
-        (unless nyan-old-car-mode-line-position
-          (setq nyan-old-car-mode-line-position (car mode-line-position)))
-        (setcar mode-line-position '(:eval (list (nyan-create)))))
-    (setcar mode-line-position nyan-old-car-mode-line-position)))
+  ;; FIXME: That doesn't smell right; might still get duplicate nyan cats and other mode-line disruptions.  -- Jacek Złydach, 2020-05-26
+  (cond (nyan-mode
+         (unless nyan-old-car-mode-line-position
+           (setq nyan-old-car-mode-line-position (car mode-line-position)))
+         (setcar mode-line-position '(:eval (list (nyan-create))))
+         ;; NOTE Redundant, but intended to, in the future, prevent the custom variable from starting the animation timer even if nyan mode isn't active. -- Jacek Złydach, 2020-05-26
+         (when nyan-animate-nyancat
+           (nyan-start-animation)))
+        ((not nyan-mode)
+         (nyan-stop-animation)          ; In case there was an animation going on.
+         (setcar mode-line-position nyan-old-car-mode-line-position)
+         (setq nyan-old-car-mode-line-position nil))))
 
 
 (provide 'nyan-mode)
