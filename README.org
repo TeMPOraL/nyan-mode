@@ -75,6 +75,12 @@ DLL is needed, do: =M-x describe-variable <ret> image-library-alist <ret>=.
 +Customizing nyan-animate-nyancat is broken; don't do it.+
 I think it works now; please report issues if there are problems with it.
 
+Code is messy and in dire need of cleanup.
+
+It's been reported to happen that nyan mode gets duplicated when you
+activate it twice during Emacs initialization. I'm investigating this and
+will hopefully track it down and fix it soon.
+
 ** Credits
 Thanks to everyone contributing patches, bug repots and ideas! The Emacs world is forever in your debt!
 
