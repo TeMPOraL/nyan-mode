@@ -54,7 +54,10 @@
 ;;; Code:
 
 (eval-when-compile (require 'cl))
-(require 'svg)
+
+(defconst +nyan-has-svg+ (image-type-available-p 'svg))
+(defconst +nyan-has-xpm+ (image-type-available-p 'xpm))
+(if +nyan-has-svg+ (require 'svg))
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
@@ -160,6 +163,8 @@ This can be t or nil."
   :group 'nyan
   )
 
+;; Looks like xpm scaling is only available since Emacs 27.
+;; See:
 ;; https://github.com/emacs-mirror/emacs/blob/master/etc/NEWS.27#L214
 (defcustom nyan-scaling-factor 1.0
   "The scaling factor for nyan-mode.
@@ -173,12 +178,12 @@ For Emacs < 27 this will not have an effect."
 
 (defun create-nyan-cat-image ()
   "Return the nyan cat image."
-  (if (image-type-available-p 'xpm)
+  (if +nyan-has-xpm+
       (create-image +nyan-cat-image+ 'xpm nil :scale nyan-scaling-factor :ascent 'center)))
 
 (defun create-nyan-animation-frames ()
   "Return the nyan animation frames."
-  (if (image-type-available-p 'xpm)
+  (if +nyan-has-xpm+
       (mapcar (lambda (id)
                 (create-image (concat +nyan-directory+ (format "img/nyan-frame-%d.xpm" id))
                               'xpm nil :scale nyan-scaling-factor :ascent 95))
@@ -229,38 +234,40 @@ For Emacs < 27 this will not have an effect."
 
 (defun nyan-create-rainbow-svg ()
   "Return the nyan rainbow svg."
-  (let* ((gradient (let ((i 0)
-                        (remaining +nyan-rainbow-colors+)
-                        (lst '())
-                        (first nil))
-                    (while remaining
-                      (setq first (car remaining))
-                      (setq remaining (cdr remaining))
-                      (setq lst
-                            (append lst
-                                    (list
-                                     (cons
-                                      (* 100 (/ (float i)
-                                                (1- (length +nyan-rainbow-colors+))))
-                                      first))))
-                      (setq i (1+ i)))
-                    lst))
-        (width +nyan-rainbow-segment-width+)
-        (height (* +nyan-rainbow-original-height+ nyan-scaling-factor))
-        (svg (svg-create
-              width
-              height
-              :stroke-width 8)))
-    (svg-gradient svg "gradient1" 'linear gradient)
-    (svg-rectangle svg 0 0 width height :gradient "gradient1")
-    svg))
+  (if +nyan-has-svg+
+      (let* ((gradient (let ((i 0)
+                             (remaining +nyan-rainbow-colors+)
+                             (lst '())
+                             (first nil))
+                         (while remaining
+                           (setq first (car remaining))
+                           (setq remaining (cdr remaining))
+                           (setq lst
+                                 (append lst
+                                         (list
+                                          (cons
+                                           (* 100 (/ (float i)
+                                                     (1- (length +nyan-rainbow-colors+))))
+                                           first))))
+                           (setq i (1+ i)))
+                         lst))
+             (width +nyan-rainbow-segment-width+)
+             (height (* +nyan-rainbow-original-height+ nyan-scaling-factor))
+             (svg (svg-create
+                   width
+                   height
+                   :stroke-width 8)))
+        (svg-gradient svg "gradient1" 'linear gradient)
+        (svg-rectangle svg 0 0 width height :gradient "gradient1")
+        svg)))
 
 (defvar nyan-rainbow-svg (nyan-create-rainbow-svg))
 
-(defun nyan-reload-cat-and-frames ()
-  "Reload the nyan cat image and animation frames."
+(defun nyan-reload-images ()
+  "Reload the nyan cat image, animation frames, and rainbow svg, if applicable."
   (setq nyan-cat-image (create-nyan-cat-image)
-        nyan-animation-frames (create-nyan-animation-frames)))
+        nyan-animation-frames (create-nyan-animation-frames)
+        nyan-rainbow-svg (nyan-create-rainbow-svg)))
 
 (defun nyan-toggle-wavy-trail ()
   "Toggle the trail to look more like the original Nyan Cat animation."
@@ -322,7 +329,6 @@ For Emacs < 27 this will not have an effect."
     (let* ((rainbows (nyan-number-of-rainbows))
            (outerspaces (- nyan-bar-length rainbows +nyan-cat-size+))
            (rainbow-string "")
-           (xpm-support (image-type-available-p 'xpm))
            (nyancat-string (propertize
                             (aref (nyan-catface) (nyan-catface-index))
                             'display (nyan-get-anim-frame)))
@@ -331,19 +337,33 @@ For Emacs < 27 this will not have an effect."
       (dotimes (number rainbows)
         (setq rainbow-string (concat rainbow-string
                                      (nyan-add-scroll-handler
-                                      (if xpm-support
-                                          (propertize "|"
-                                                      'display (svg-image nyan-rainbow-svg
-                                                                          :scale 1.0
-                                                                          :ascent (or (and nyan-wavy-trail
-                                                                                           (nyan-wavy-rainbow-ascent number))
-                                                                                      (if (nyan--is-animating-p) 95 'center))))
-                                        "|")
+                                      (cond
+                                       (+nyan-has-svg+
+                                        (propertize
+                                         "|"
+                                         'display (svg-image
+                                                   nyan-rainbow-svg
+                                                   :scale 1.0
+                                                   :ascent (or (and nyan-wavy-trail
+                                                                    (nyan-wavy-rainbow-ascent number))
+                                                               (if (nyan--is-animating-p) 95 'center)))))
+                                       (+nyan-has-xpm+
+                                        (propertize
+                                         "|"
+                                         'display (create-image
+                                                   +nyan-rainbow-image+
+                                                   'xpm
+                                                   nil
+                                                   :scale nyan-scaling-factor
+                                                   :ascent (or (and nyan-wavy-trail
+                                                                    (nyan-wavy-rainbow-ascent number))
+                                                               (if (nyan--is-animating-p) 95 'center)))))
+                                       (t "|"))
                                       (/ (float number) nyan-bar-length) buffer))))
       (dotimes (number outerspaces)
         (setq outerspace-string (concat outerspace-string
                                         (nyan-add-scroll-handler
-                                         (if xpm-support
+                                         (if +nyan-has-xpm+
                                              (propertize "-"
                                                          'display (create-image +nyan-outerspace-image+ 'xpm nil :scale nyan-scaling-factor :ascent (if (nyan--is-animating-p) 95 'center)))
                                            "-")
@@ -390,8 +410,7 @@ option `scroll-bar-mode'."
          (if (version< emacs-version "27")
              (set-default 'nyan-scaling-factor 1.0))
 
-         (nyan-reload-cat-and-frames)
-         (setq nyan-rainbow-svg (nyan-create-rainbow-svg))
+         (nyan-reload-images)
          (setcar mode-line-position '(:eval (list (nyan-create))))
          ;; NOTE Redundant, but intended to, in the future, prevent the custom variable from starting the animation timer even if nyan mode isn't active. -- Jacek Złydach, 2020-05-26
          (when nyan-animate-nyancat
