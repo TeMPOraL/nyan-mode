@@ -54,6 +54,7 @@
 ;;; Code:
 
 (eval-when-compile (require 'cl))
+(require 'svg)
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
@@ -159,12 +160,16 @@ This can be t or nil."
   :group 'nyan
   )
 
+;; https://github.com/emacs-mirror/emacs/blob/master/etc/NEWS.27#L214
 (defcustom nyan-scaling-factor 1.0
-  "The scaling factor for nyan-mode."
+  "The scaling factor for nyan-mode.
+Emacs 27 or above needed.
+For Emacs < 27 this will not have an effect."
   :type 'float
+  :set (lambda (sym val)
+         (set-default sym val)
+         (nyan-refresh))
   :group 'nyan)
-
-(defvar nyan-old-scaling-factor 0.0)
 
 (defun create-nyan-cat-image ()
   "Return the nyan cat image."
@@ -197,6 +202,60 @@ This can be t or nil."
                            "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
                            "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]])
 
+(defconst +nyan-original-rainbow-image-size+
+  (image-size
+   (create-image +nyan-rainbow-image+ 'xpm nil
+                 :scale 1.0
+                 :ascent 'center)))
+(defconst +nyan-rainbow-colors+
+  '("#522244"
+    "#BF1119"
+    "#F52A02"
+    "#FC7800"
+    "#FBA500"
+    "#F0D300"
+    "#B4BF00"
+    "#4E9802"
+    "#2CCB13"
+    "#20D15C"
+    "#0EA7CB"
+    "#1E80F7"
+    "#5247F7"
+    "#5536D9"
+    "#263498"))
+
+(defconst +nyan-rainbow-segment-width+ 8)
+(defconst +nyan-rainbow-original-height+ 15)
+
+(defun nyan-create-rainbow-svg ()
+  "Return the nyan rainbow svg."
+  (let* ((gradient (let ((i 0)
+                        (remaining +nyan-rainbow-colors+)
+                        (lst '())
+                        (first nil))
+                    (while remaining
+                      (setq first (car remaining))
+                      (setq remaining (cdr remaining))
+                      (setq lst
+                            (append lst
+                                    (list
+                                     (cons
+                                      (* 100 (/ (float i)
+                                                (1- (length +nyan-rainbow-colors+))))
+                                      first))))
+                      (setq i (1+ i)))
+                    lst))
+        (width +nyan-rainbow-segment-width+)
+        (height (* +nyan-rainbow-original-height+ nyan-scaling-factor))
+        (svg (svg-create
+              width
+              height
+              :stroke-width 8)))
+    (svg-gradient svg "gradient1" 'linear gradient)
+    (svg-rectangle svg 0 0 width height :gradient "gradient1")
+    svg))
+
+(defvar nyan-rainbow-svg (nyan-create-rainbow-svg))
 
 (defun nyan-reload-cat-and-frames ()
   "Reload the nyan cat image and animation frames."
@@ -258,8 +317,6 @@ This can be t or nil."
 
 (defun nyan-create ()
   "Return the Nyan Cat indicator to be inserted into mode line."
-  (unless (= nyan-old-scaling-factor nyan-scaling-factor)
-    (nyan-reload-cat-and-frames))
   (if (< (window-width) nyan-minimum-window-width)
       ""                                ; disabled for too small windows
     (let* ((rainbows (nyan-number-of-rainbows))
@@ -276,9 +333,11 @@ This can be t or nil."
                                      (nyan-add-scroll-handler
                                       (if xpm-support
                                           (propertize "|"
-                                                      'display (create-image +nyan-rainbow-image+ 'xpm nil :scale nyan-scaling-factor :ascent (or (and nyan-wavy-trail
-                                                                                                                            (nyan-wavy-rainbow-ascent number))
-                                                                                                                       (if (nyan--is-animating-p) 95 'center))))
+                                                      'display (svg-image nyan-rainbow-svg
+                                                                          :scale 1.0
+                                                                          :ascent (or (and nyan-wavy-trail
+                                                                                           (nyan-wavy-rainbow-ascent number))
+                                                                                      (if (nyan--is-animating-p) 95 'center))))
                                         "|")
                                       (/ (float number) nyan-bar-length) buffer))))
       (dotimes (number outerspaces)
@@ -327,6 +386,12 @@ option `scroll-bar-mode'."
   (cond (nyan-mode
          (unless nyan-old-car-mode-line-position
            (setq nyan-old-car-mode-line-position (car mode-line-position)))
+         ;; Disable scaling for Emacs < 27 because it will not work right.
+         (if (version< emacs-version "27")
+             (set-default 'nyan-scaling-factor 1.0))
+
+         (nyan-reload-cat-and-frames)
+         (setq nyan-rainbow-svg (nyan-create-rainbow-svg))
          (setcar mode-line-position '(:eval (list (nyan-create))))
          ;; NOTE Redundant, but intended to, in the future, prevent the custom variable from starting the animation timer even if nyan mode isn't active. -- Jacek Złydach, 2020-05-26
          (when nyan-animate-nyancat
