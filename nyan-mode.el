@@ -159,15 +159,30 @@ This can be t or nil."
   :group 'nyan
   )
 
-;;; Load images of Nyan Cat an it's rainbow.
-(defvar nyan-cat-image (if (image-type-available-p 'xpm)
-                           (create-image +nyan-cat-image+ 'xpm nil :ascent 'center)))
+(defcustom nyan-scaling-factor 1.0
+  "The scaling factor for nyan-mode."
+  :type 'float
+  :group 'nyan)
 
-(defvar nyan-animation-frames (if (image-type-available-p 'xpm)
-                                  (mapcar (lambda (id)
-                                            (create-image (concat +nyan-directory+ (format "img/nyan-frame-%d.xpm" id))
-                                                          'xpm nil :ascent 95))
-                                          '(1 2 3 4 5 6))))
+(defvar nyan-old-scaling-factor 0.0)
+
+(defun create-nyan-cat-image ()
+  "Return the nyan cat image."
+  (if (image-type-available-p 'xpm)
+      (create-image +nyan-cat-image+ 'xpm nil :scale nyan-scaling-factor :ascent 'center)))
+
+(defun create-nyan-animation-frames ()
+  "Return the nyan animation frames."
+  (if (image-type-available-p 'xpm)
+      (mapcar (lambda (id)
+                (create-image (concat +nyan-directory+ (format "img/nyan-frame-%d.xpm" id))
+                              'xpm nil :scale nyan-scaling-factor :ascent 95))
+              '(1 2 3 4 5 6))))
+
+;;; Load images of Nyan Cat an it's rainbow.
+(defvar nyan-cat-image (create-nyan-cat-image))
+
+(defvar nyan-animation-frames (create-nyan-animation-frames))
 (defvar nyan-current-frame 0)
 
 (defconst +nyan-catface+ [
@@ -181,6 +196,12 @@ This can be t or nil."
                           ["(＞ワ＜三　　　)" "(　＞ワ三＜　　)"
                            "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
                            "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]])
+
+
+(defun nyan-reload-cat-and-frames ()
+  "Reload the nyan cat image and animation frames."
+  (setq nyan-cat-image (create-nyan-cat-image)
+        nyan-animation-frames (create-nyan-animation-frames)))
 
 (defun nyan-toggle-wavy-trail ()
   "Toggle the trail to look more like the original Nyan Cat animation."
@@ -237,6 +258,8 @@ This can be t or nil."
 
 (defun nyan-create ()
   "Return the Nyan Cat indicator to be inserted into mode line."
+  (unless (= nyan-old-scaling-factor nyan-scaling-factor)
+    (nyan-reload-cat-and-frames))
   (if (< (window-width) nyan-minimum-window-width)
       ""                                ; disabled for too small windows
     (let* ((rainbows (nyan-number-of-rainbows))
@@ -253,7 +276,7 @@ This can be t or nil."
                                      (nyan-add-scroll-handler
                                       (if xpm-support
                                           (propertize "|"
-                                                      'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
+                                                      'display (create-image +nyan-rainbow-image+ 'xpm nil :scale nyan-scaling-factor :ascent (or (and nyan-wavy-trail
                                                                                                                             (nyan-wavy-rainbow-ascent number))
                                                                                                                        (if (nyan--is-animating-p) 95 'center))))
                                         "|")
@@ -263,7 +286,7 @@ This can be t or nil."
                                         (nyan-add-scroll-handler
                                          (if xpm-support
                                              (propertize "-"
-                                                         'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if (nyan--is-animating-p) 95 'center)))
+                                                         'display (create-image +nyan-outerspace-image+ 'xpm nil :scale nyan-scaling-factor :ascent (if (nyan--is-animating-p) 95 'center)))
                                            "-")
                                          (/ (float (+ rainbows +nyan-cat-size+ number)) nyan-bar-length) buffer))))
       ;; Compute Nyan Cat string.
