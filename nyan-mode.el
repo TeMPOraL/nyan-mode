@@ -71,6 +71,8 @@
 
 (defconst +nyan-modeline-help-string+ "Nyanyanya!\nmouse-1: Scroll buffer position")
 
+(defconst +nyan-frame-count+ 6)
+
 (defvar nyan-old-car-mode-line-position nil)
 
 (defgroup nyan nil
@@ -207,11 +209,6 @@ For Emacs < 27 this will not have an effect."
                            "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
                            "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]])
 
-(defconst +nyan-original-rainbow-image-size+
-  (image-size
-   (create-image +nyan-rainbow-image+ 'xpm nil
-                 :scale 1.0
-                 :ascent 'center)))
 (defconst +nyan-rainbow-colors+
   '("#522244"
     "#BF1119"
@@ -261,21 +258,67 @@ For Emacs < 27 this will not have an effect."
         (svg-rectangle svg 0 0 width height :gradient "gradient1")
         svg)))
 
-(defvar nyan-rainbow-svg (nyan-create-rainbow-svg))
+(defun nyan-create-rainbow-frame-image (is-animating svg &optional number)
+  "Create nyan rainbow image #NUMBER.
+SVG will be used to generate the image if it is non-nil.
+If IS-ANIMATING is non-nil, this function returns the image
+for an animating nyan bar.  If IS-ANIMATING is nil, it
+returns that for a static nyan bar.
+
+When IS-ANIMATING is nil, NUMBER is optional."
+  (cond
+   (svg
+    (svg-image
+     svg
+     :scale 1.0
+     :ascent (or (and nyan-wavy-trail
+                      (nyan-wavy-rainbow-ascent number is-animating))
+                 (if is-animating 95 'center))))
+   (+nyan-has-xpm+
+    (create-image
+     +nyan-rainbow-image+
+     'xpm
+     nil
+     :scale nyan-scaling-factor
+     :ascent (or (and nyan-wavy-trail
+                      (nyan-wavy-rainbow-ascent number is-animating))
+                 (if is-animating 95 'center))))))
+
+(defun nyan-create-rainbow-images (is-animating)
+  "Return a list of nyan rainbow images.
+If IS-ANIMATING is non-nil, this function returns the images
+for an animating nyan bar.  If IS-ANIMATING is nil, it
+returns that for a static nyan bar."
+  (let ((svg (nyan-create-rainbow-svg))
+        (images nil))
+    (dotimes (number +nyan-frame-count+)
+      (let ((cur-frame (nyan-create-rainbow-frame-image is-animating (nyan-create-rainbow-svg) number)))
+        (setq images (append images (list cur-frame)))))
+    images))
+
+;; These are pre-loaded images that helps to speed up
+;; updating the nyan bar.
+;; Note that we use a list even for static images
+;; because the way `'display` property works in Emacs.
+;; See the `nyan-create` function for more details.
+(defvar nyan-rainbow-animating-images (nyan-create-rainbow-images t))
+(defvar nyan-rainbow-static-images (nyan-create-rainbow-images nil))
 
 (defun nyan-reload-images ()
   "Reload the nyan cat image, animation frames, and rainbow svg, if applicable."
   (setq nyan-cat-image (create-nyan-cat-image)
         nyan-animation-frames (create-nyan-animation-frames)
-        nyan-rainbow-svg (nyan-create-rainbow-svg)))
+        nyan-rainbow-animating-images (nyan-create-rainbow-images t)
+        nyan-rainbow-static-images (nyan-create-rainbow-images nil)))
 
 (defun nyan-toggle-wavy-trail ()
   "Toggle the trail to look more like the original Nyan Cat animation."
   (interactive)
-  (setq nyan-wavy-trail (not nyan-wavy-trail)))
+  (setq nyan-wavy-trail (not nyan-wavy-trail))
+  (nyan-refresh))
 
 (defun nyan-swich-anim-frame ()
-  (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
+  (setq nyan-current-frame (% (+ 1 nyan-current-frame) +nyan-frame-count+))
   (redraw-modeline))
 
 (defun nyan-get-anim-frame ()
@@ -283,12 +326,15 @@ For Emacs < 27 this will not have an effect."
       (nth nyan-current-frame nyan-animation-frames)
     nyan-cat-image))
 
-(defun nyan-wavy-rainbow-ascent (number)
-  (if (nyan--is-animating-p)
+(defun nyan-wavy-rainbow-ascent (number is-animating)
+  "Return the :ascent parameter for rainbow segment #NUMBER.
+If IS-ANIMATING is non-nil, this function returns the ascent
+for an animating nyan bar.  If IS-ANIMATING is nil, it
+returns that for a static nyan bar."
+  (if is-animating
       (min 100 (+ 90
-                  (* 3 (abs (- (/ 6 2)
-                               (% (+ number nyan-current-frame)
-                                  6))))))
+                  (* 3 (abs (- (/ +nyan-frame-count+ 2)
+                               (% number +nyan-frame-count+))))))
     (if (zerop (% number 2)) 80 'center)))
 
 (defun nyan-number-of-rainbows ()
@@ -338,26 +384,23 @@ For Emacs < 27 this will not have an effect."
         (setq rainbow-string (concat rainbow-string
                                      (nyan-add-scroll-handler
                                       (cond
-                                       (+nyan-has-svg+
+                                       ((or +nyan-has-svg+ +nyan-has-xpm+)
                                         (propertize
                                          "|"
-                                         'display (svg-image
-                                                   nyan-rainbow-svg
-                                                   :scale 1.0
-                                                   :ascent (or (and nyan-wavy-trail
-                                                                    (nyan-wavy-rainbow-ascent number))
-                                                               (if (nyan--is-animating-p) 95 'center)))))
-                                       (+nyan-has-xpm+
-                                        (propertize
-                                         "|"
-                                         'display (create-image
-                                                   +nyan-rainbow-image+
-                                                   'xpm
-                                                   nil
-                                                   :scale nyan-scaling-factor
-                                                   :ascent (or (and nyan-wavy-trail
-                                                                    (nyan-wavy-rainbow-ascent number))
-                                                               (if (nyan--is-animating-p) 95 'center)))))
+                                         'display
+                                         ;; HACK
+                                         ;; Here we use lists for BOTH static and animating frames
+                                         ;; because Emacs will combine two continuous objects
+                                         ;; that are `eq` to each other.
+                                         ;; Compare using `"-"` as the display content below vs.
+                                         ;; `(string 45)`. The former displays only once while the
+                                         ;; latter displays correctly.
+                                         ;; Non-continuous objects that are `eq` to each other
+                                         ;; are not affected. Try `(if (= (% number 2)) "-" "/")`.
+                                         (nth (% (+ number nyan-current-frame) +nyan-frame-count+)
+                                              (if (nyan--is-animating-p)
+                                                  nyan-rainbow-animating-images
+                                                nyan-rainbow-static-images))))
                                        (t "|"))
                                       (/ (float number) nyan-bar-length) buffer))))
       (dotimes (number outerspaces)
