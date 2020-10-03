@@ -55,6 +55,10 @@
 
 (eval-when-compile (require 'cl))
 
+(defconst +nyan-has-svg+ (image-type-available-p 'svg))
+(defconst +nyan-has-xpm+ (image-type-available-p 'xpm))
+(if +nyan-has-svg+ (require 'svg))
+
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
 (defconst +nyan-cat-size+ 3)
@@ -66,6 +70,8 @@
 (defconst +nyan-music+ (concat +nyan-directory+ "mus/nyanlooped.mp3"))
 
 (defconst +nyan-modeline-help-string+ "Nyanyanya!\nmouse-1: Scroll buffer position")
+
+(defconst +nyan-frame-count+ 6)
 
 (defvar nyan-old-car-mode-line-position nil)
 
@@ -159,15 +165,36 @@ This can be t or nil."
   :group 'nyan
   )
 
-;;; Load images of Nyan Cat an it's rainbow.
-(defvar nyan-cat-image (if (image-type-available-p 'xpm)
-                           (create-image +nyan-cat-image+ 'xpm nil :ascent 'center)))
+;; Looks like xpm scaling is only available since Emacs 27.
+;; See:
+;; https://github.com/emacs-mirror/emacs/blob/master/etc/NEWS.27#L214
+(defcustom nyan-scaling-factor 1.0
+  "The scaling factor for nyan-mode.
+Emacs 27 or above needed.
+For Emacs < 27 this will not have an effect."
+  :type 'float
+  :set (lambda (sym val)
+         (set-default sym val)
+         (nyan-refresh))
+  :group 'nyan)
 
-(defvar nyan-animation-frames (if (image-type-available-p 'xpm)
-                                  (mapcar (lambda (id)
-                                            (create-image (concat +nyan-directory+ (format "img/nyan-frame-%d.xpm" id))
-                                                          'xpm nil :ascent 95))
-                                          '(1 2 3 4 5 6))))
+(defun create-nyan-cat-image ()
+  "Return the nyan cat image."
+  (if +nyan-has-xpm+
+      (create-image +nyan-cat-image+ 'xpm nil :scale nyan-scaling-factor :ascent 'center)))
+
+(defun create-nyan-animation-frames ()
+  "Return the nyan animation frames."
+  (if +nyan-has-xpm+
+      (mapcar (lambda (id)
+                (create-image (concat +nyan-directory+ (format "img/nyan-frame-%d.xpm" id))
+                              'xpm nil :scale nyan-scaling-factor :ascent 95))
+              '(1 2 3 4 5 6))))
+
+;;; Load images of Nyan Cat an it's rainbow.
+(defvar nyan-cat-image (create-nyan-cat-image))
+
+(defvar nyan-animation-frames (create-nyan-animation-frames))
 (defvar nyan-current-frame 0)
 
 (defconst +nyan-catface+ [
@@ -182,13 +209,116 @@ This can be t or nil."
                            "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
                            "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]])
 
+(defconst +nyan-rainbow-colors+
+  '("#522244"
+    "#BF1119"
+    "#F52A02"
+    "#FC7800"
+    "#FBA500"
+    "#F0D300"
+    "#B4BF00"
+    "#4E9802"
+    "#2CCB13"
+    "#20D15C"
+    "#0EA7CB"
+    "#1E80F7"
+    "#5247F7"
+    "#5536D9"
+    "#263498"))
+
+(defconst +nyan-rainbow-segment-width+ 8)
+(defconst +nyan-rainbow-original-height+ 15)
+
+(defun nyan-create-rainbow-svg ()
+  "Return the nyan rainbow svg."
+  (if +nyan-has-svg+
+      (let* ((gradient (let ((i 0)
+                             (remaining +nyan-rainbow-colors+)
+                             (lst '())
+                             (first nil))
+                         (while remaining
+                           (setq first (car remaining))
+                           (setq remaining (cdr remaining))
+                           (setq lst
+                                 (append lst
+                                         (list
+                                          (cons
+                                           (* 100 (/ (float i)
+                                                     (1- (length +nyan-rainbow-colors+))))
+                                           first))))
+                           (setq i (1+ i)))
+                         lst))
+             (width +nyan-rainbow-segment-width+)
+             (height (* +nyan-rainbow-original-height+ nyan-scaling-factor))
+             (svg (svg-create
+                   width
+                   height
+                   :stroke-width 8)))
+        (svg-gradient svg "gradient1" 'linear gradient)
+        (svg-rectangle svg 0 0 width height :gradient "gradient1")
+        svg)))
+
+(defun nyan-create-rainbow-frame-image (is-animating svg &optional number)
+  "Create nyan rainbow image #NUMBER.
+SVG will be used to generate the image if it is non-nil.
+If IS-ANIMATING is non-nil, this function returns the image
+for an animating nyan bar.  If IS-ANIMATING is nil, it
+returns that for a static nyan bar.
+
+When IS-ANIMATING is nil, NUMBER is optional."
+  (cond
+   (svg
+    (svg-image
+     svg
+     :scale 1.0
+     :ascent (or (and nyan-wavy-trail
+                      (nyan-wavy-rainbow-ascent number is-animating))
+                 (if is-animating 95 'center))))
+   (+nyan-has-xpm+
+    (create-image
+     +nyan-rainbow-image+
+     'xpm
+     nil
+     :scale nyan-scaling-factor
+     :ascent (or (and nyan-wavy-trail
+                      (nyan-wavy-rainbow-ascent number is-animating))
+                 (if is-animating 95 'center))))))
+
+(defun nyan-create-rainbow-images (is-animating)
+  "Return a list of nyan rainbow images.
+If IS-ANIMATING is non-nil, this function returns the images
+for an animating nyan bar.  If IS-ANIMATING is nil, it
+returns that for a static nyan bar."
+  (let ((svg (nyan-create-rainbow-svg))
+        (images nil))
+    (dotimes (number +nyan-frame-count+)
+      (let ((cur-frame (nyan-create-rainbow-frame-image is-animating (nyan-create-rainbow-svg) number)))
+        (setq images (append images (list cur-frame)))))
+    images))
+
+;; These are pre-loaded images that helps to speed up
+;; updating the nyan bar.
+;; Note that we use a list even for static images
+;; because the way `'display` property works in Emacs.
+;; See the `nyan-create` function for more details.
+(defvar nyan-rainbow-animating-images (nyan-create-rainbow-images t))
+(defvar nyan-rainbow-static-images (nyan-create-rainbow-images nil))
+
+(defun nyan-reload-images ()
+  "Reload the nyan cat image, animation frames, and rainbow svg, if applicable."
+  (setq nyan-cat-image (create-nyan-cat-image)
+        nyan-animation-frames (create-nyan-animation-frames)
+        nyan-rainbow-animating-images (nyan-create-rainbow-images t)
+        nyan-rainbow-static-images (nyan-create-rainbow-images nil)))
+
 (defun nyan-toggle-wavy-trail ()
   "Toggle the trail to look more like the original Nyan Cat animation."
   (interactive)
-  (setq nyan-wavy-trail (not nyan-wavy-trail)))
+  (setq nyan-wavy-trail (not nyan-wavy-trail))
+  (nyan-refresh))
 
 (defun nyan-swich-anim-frame ()
-  (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
+  (setq nyan-current-frame (% (+ 1 nyan-current-frame) +nyan-frame-count+))
   (redraw-modeline))
 
 (defun nyan-get-anim-frame ()
@@ -196,12 +326,15 @@ This can be t or nil."
       (nth nyan-current-frame nyan-animation-frames)
     nyan-cat-image))
 
-(defun nyan-wavy-rainbow-ascent (number)
-  (if (nyan--is-animating-p)
+(defun nyan-wavy-rainbow-ascent (number is-animating)
+  "Return the :ascent parameter for rainbow segment #NUMBER.
+If IS-ANIMATING is non-nil, this function returns the ascent
+for an animating nyan bar.  If IS-ANIMATING is nil, it
+returns that for a static nyan bar."
+  (if is-animating
       (min 100 (+ 90
-                  (* 3 (abs (- (/ 6 2)
-                               (% (+ number nyan-current-frame)
-                                  6))))))
+                  (* 3 (abs (- (/ +nyan-frame-count+ 2)
+                               (% number +nyan-frame-count+))))))
     (if (zerop (% number 2)) 80 'center)))
 
 (defun nyan-number-of-rainbows ()
@@ -242,7 +375,6 @@ This can be t or nil."
     (let* ((rainbows (nyan-number-of-rainbows))
            (outerspaces (- nyan-bar-length rainbows +nyan-cat-size+))
            (rainbow-string "")
-           (xpm-support (image-type-available-p 'xpm))
            (nyancat-string (propertize
                             (aref (nyan-catface) (nyan-catface-index))
                             'display (nyan-get-anim-frame)))
@@ -251,19 +383,32 @@ This can be t or nil."
       (dotimes (number rainbows)
         (setq rainbow-string (concat rainbow-string
                                      (nyan-add-scroll-handler
-                                      (if xpm-support
-                                          (propertize "|"
-                                                      'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
-                                                                                                                            (nyan-wavy-rainbow-ascent number))
-                                                                                                                       (if (nyan--is-animating-p) 95 'center))))
-                                        "|")
+                                      (cond
+                                       ((or +nyan-has-svg+ +nyan-has-xpm+)
+                                        (propertize
+                                         "|"
+                                         'display
+                                         ;; HACK
+                                         ;; Here we use lists for BOTH static and animating frames
+                                         ;; because Emacs will combine two continuous objects
+                                         ;; that are `eq` to each other.
+                                         ;; Compare using `"-"` as the display content below vs.
+                                         ;; `(string 45)`. The former displays only once while the
+                                         ;; latter displays correctly.
+                                         ;; Non-continuous objects that are `eq` to each other
+                                         ;; are not affected. Try `(if (= (% number 2)) "-" "/")`.
+                                         (nth (% (+ number nyan-current-frame) +nyan-frame-count+)
+                                              (if (nyan--is-animating-p)
+                                                  nyan-rainbow-animating-images
+                                                nyan-rainbow-static-images))))
+                                       (t "|"))
                                       (/ (float number) nyan-bar-length) buffer))))
       (dotimes (number outerspaces)
         (setq outerspace-string (concat outerspace-string
                                         (nyan-add-scroll-handler
-                                         (if xpm-support
+                                         (if +nyan-has-xpm+
                                              (propertize "-"
-                                                         'display (create-image +nyan-outerspace-image+ 'xpm nil :ascent (if (nyan--is-animating-p) 95 'center)))
+                                                         'display (create-image +nyan-outerspace-image+ 'xpm nil :scale nyan-scaling-factor :ascent (if (nyan--is-animating-p) 95 'center)))
                                            "-")
                                          (/ (float (+ rainbows +nyan-cat-size+ number)) nyan-bar-length) buffer))))
       ;; Compute Nyan Cat string.
@@ -304,6 +449,11 @@ option `scroll-bar-mode'."
   (cond (nyan-mode
          (unless nyan-old-car-mode-line-position
            (setq nyan-old-car-mode-line-position (car mode-line-position)))
+         ;; Disable scaling for Emacs < 27 because it will not work right.
+         (if (version< emacs-version "27")
+             (set-default 'nyan-scaling-factor 1.0))
+
+         (nyan-reload-images)
          (setcar mode-line-position '(:eval (list (nyan-create))))
          ;; NOTE Redundant, but intended to, in the future, prevent the custom variable from starting the animation timer even if nyan mode isn't active. -- Jacek Złydach, 2020-05-26
          (when nyan-animate-nyancat
