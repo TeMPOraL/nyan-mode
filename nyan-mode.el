@@ -55,6 +55,21 @@
 
 (eval-when-compile (require 'cl))
 
+(defun zk/today-effort ()
+  "Check how many ideas generated today"
+  (let ((ideas-today 0)
+        (idea-folder-name (directory-files org-roam-directory nil "\.org$" t)))
+    (cl-loop
+     for my-idea-name in idea-folder-name
+     if (string-match (format-time-string "%Y%m%d") my-idea-name)
+     do (incf ideas-today))
+    (float ideas-today)))
+
+(defcustom zk-daily-goal 2
+  "Number of seconds between animation frames."
+  :type 'float
+  :group 'nyan)
+
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
 (defconst +nyan-cat-size+ 3)
@@ -204,11 +219,21 @@ This can be t or nil."
                                   6))))))
     (if (zerop (% number 2)) 80 'center)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (defun nyan-number-of-rainbows ()                   ;;
+;;   (round (/ (* (round (* 100                        ;;
+;;                          (/ (- (float (point))      ;;
+;;                                (float (point-min))) ;;
+;;                             (float (point-max)))))  ;;
+;;                (- nyan-bar-length +nyan-cat-size+)) ;;
+;;             100)))                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun nyan-number-of-rainbows ()
   (round (/ (* (round (* 100
-                         (/ (- (float (point))
-                               (float (point-min)))
-                            (float (point-max)))))
+                         (/ (zk/today-effort)
+                            zk-daily-goal)
+                         ))
                (- nyan-bar-length +nyan-cat-size+))
             100)))
 
@@ -292,7 +317,7 @@ This can be t or nil."
 
 
 ;;;###autoload
-(define-minor-mode nyan-mode
+(define-minor-mode tweak-nyan-mode-2-create-progress-bar-for-zk-mode
   "Use NyanCat to show buffer size and position in mode-line.
 You can customize this minor mode, see option `nyan-mode'.
 
@@ -314,6 +339,6 @@ option `scroll-bar-mode'."
          (setq nyan-old-car-mode-line-position nil))))
 
 
-(provide 'nyan-mode)
+(provide 'tweak-nyan-mode)
 
 ;;; nyan-mode.el ends here
