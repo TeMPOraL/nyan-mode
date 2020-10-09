@@ -65,7 +65,7 @@
      do (incf ideas-today))
     (float ideas-today)))
 
-(defcustom zk-daily-goal 2
+(defcustom zk-daily-goal 10
   "Number of seconds between animation frames."
   :type 'float
   :group 'nyan)
@@ -219,20 +219,11 @@ This can be t or nil."
                                   6))))))
     (if (zerop (% number 2)) 80 'center)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (defun nyan-number-of-rainbows ()                   ;;
-;;   (round (/ (* (round (* 100                        ;;
-;;                          (/ (- (float (point))      ;;
-;;                                (float (point-min))) ;;
-;;                             (float (point-max)))))  ;;
-;;                (- nyan-bar-length +nyan-cat-size+)) ;;
-;;             100)))                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun nyan-number-of-rainbows ()
   (round (/ (* (round (* 100
-                         (/ (zk/today-effort)
-                            zk-daily-goal)
+                         (if (> (/ (zk/today-effort) zk-daily-goal) 1)
+                             (float 1)
+                           (/ (zk/today-effort) zk-daily-goal))
                          ))
                (- nyan-bar-length +nyan-cat-size+))
             100)))
@@ -317,7 +308,7 @@ This can be t or nil."
 
 
 ;;;###autoload
-(define-minor-mode tweak-nyan-mode-2-create-progress-bar-for-zk-mode
+(define-minor-mode nyan-mode
   "Use NyanCat to show buffer size and position in mode-line.
 You can customize this minor mode, see option `nyan-mode'.
 
