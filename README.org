@@ -26,6 +26,7 @@ point from 0% to 100%.
 
 ** Customizations
 
+#+begin_src elisp
 (add-to-list 'load-path "~/.emacs.d/nyan-mode")
 (require 'tweak-nyan-mode)
 
@@ -70,3 +71,4 @@ point from 0% to 100%.
 
 (add-hook 'org-mode-hook 'wr-org-roam-mode)
 (add-hook 'wr-org-roam-mode-hook 'wr-org-roam-mode-line-need-more-effort)
+#+end_src
