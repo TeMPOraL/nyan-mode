@@ -28,45 +28,16 @@ The nyan bar is now a progress bar.
 (add-to-list 'load-path "~/.emacs.d/nyan-mode")
 (require 'tweak-nyan-mode)
 
-(defun today-effort ()
-  "Check how many ideas generated today"
-  (let ((ideas-today 0)
-        (idea-folder-name (directory-files org-roam-directory nil "\.org$" t)))
-    (cl-loop
-     for my-idea-name in idea-folder-name
-     if (string-match (format-time-string "%Y%m%d") my-idea-name)
-     do (incf ideas-today))
-    (int-to-string ideas-today)))
-
-(defun yesterday-effort ()
-  (string-trim
-   (nth 2
-        (split-string
-         (car (last (read-lines (concat (expand-file-name org-roam-directory) "/output/stastic.csv"))))
-         "\\,"))))
-
-(defun wr-org-roam-mode-line-need-more-effort ()
-  "My mode line for org-roam"
-  (when (string-match-p (expand-file-name org-roam-directory) (format "%s" buffer-file-name))
-    (progn (setq mode-line-format
-                 (list
-                  '(:eval
-                    (window-numbering-get-number-string))
-                  " "
-                  'mode-line-mule-info
-                  'mode-line-modified
-                  'mode-line-frame-identification
-                  "  "
-                  '(:eval (list (nyan-create)))
-                  "|"
-                  "%n"
-                  "Today: "
-                  '(:eval (today-effort))
-                  "  Goal: "
-                  '(:eval (format "%s" zk-daily-goal))
-                  ))
-           (force-mode-line-update))))
-
 (add-hook 'org-mode-hook 'wr-org-roam-mode)
 (add-hook 'wr-org-roam-mode-hook 'wr-org-roam-mode-line-need-more-effort)
+#+end_src
+
+
+Please put this file `.dir-locals.el` in the `org-roam` directory:
+#+begin_src elisp
+;;; Directory Local Variables
+;;; For more information see (info "(emacs) Directory Variables")
+
+((org-mode . ((my-dir-local-flag . t)
+              (my-org-roam-dir-local-flag . t))))
 #+end_src

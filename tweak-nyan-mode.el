@@ -65,10 +65,48 @@
      do (incf ideas-today))
     (float ideas-today)))
 
+(defun st/today-effort ()
+  "Return a string of how many ideas generated today"
+  (let ((ideas-today 0)
+        (idea-folder-name (directory-files org-roam-directory nil "\.org$" t)))
+    (cl-loop
+     for my-idea-name in idea-folder-name
+     if (string-match (format-time-string "%Y%m%d") my-idea-name)
+     do (incf ideas-today))
+    (int-to-string ideas-today)))
+
 (defcustom zk-daily-goal 10
   "Number of seconds between animation frames."
   :type 'float
   :group 'nyan)
+
+(defun read-lines (filePath)
+  "Return a list of lines of a file at filePath."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (split-string (buffer-string) "\n" t)))
+
+(defun wr-org-roam-mode-line-need-more-effort ()
+  "My mode line for org-roam"
+  (when (string-match-p (expand-file-name org-roam-directory) (format "%s" buffer-file-name))
+    (progn (setq mode-line-format
+                 (list
+                  '(:eval
+                    (window-numbering-get-number-string))
+                  " "
+                  'mode-line-mule-info
+                  'mode-line-modified
+                  'mode-line-frame-identification
+                  "  "
+                  '(:eval (list (nyan-create)))
+                  "|"
+                  "%n"
+                  "Today: "
+                  '(:eval (st/today-effort))
+                  "  Goal: "
+                  '(:eval (format "%s" zk-daily-goal))
+                  ))
+           (force-mode-line-update))))
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
