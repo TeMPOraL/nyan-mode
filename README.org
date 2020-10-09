@@ -20,9 +20,7 @@ Nyanmacs is expanding!! [[http://jacek.zlydach.pl/blog/2011-08-25-introducing-ny
 
 [[file:screenshot.png]]
 
-Nyan Mode is an analog indicator of your position in the buffer. The
-Cat should go from left to right in your mode-line, as you move your
-point from 0% to 100%.
+The nyan bar is now a progress bar.
 
 ** Customizations
 
