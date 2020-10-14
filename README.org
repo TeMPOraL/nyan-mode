@@ -22,16 +22,47 @@ Nyanmacs is expanding!! [[http://jacek.zlydach.pl/blog/2011-08-25-introducing-ny
 
 The nyan bar is now a progress bar.
 
-** Customizations
+I try to make this as a separated package.
 
+Now, it is another minor mode in addition to the `nyan-mode`. It can
+achieve my original thoughts, but clearly I can make it into one and
+finally perhaps a separated package.
+
+** Customizations
 #+begin_src elisp
 (add-to-list 'load-path "~/.emacs.d/nyan-mode")
 (require 'tweak-nyan-mode)
 
-(add-hook 'org-mode-hook 'wr-org-roam-mode)
-(add-hook 'wr-org-roam-mode-hook 'wr-org-roam-mode-line-need-more-effort)
-#+end_src
+(define-minor-mode wr-org-roam-mode
+  "Show today and yesterday's efforts on mode-line"
+  :init-value nil
+  :lighter " wr-roam"
+  :group 'wr-roam)
 
+(defcustom wr-org-roam-mode-hook nil
+  "Mode hook for my tweak mode run after the mode was turned on."
+  :group 'wr-roam
+  :type 'hook)
+
+(defcustom my-org-roam-dir-local-flag nil
+  "enable wr-org-roam-mode-hook only in zk folder"
+  :group 'wr-roam
+  :type '(boolean))
+
+(defun external-script-to-write-today-effort ()
+  "data written into a file"
+  (shell-command-to-string "sh ~/Dropbox/myNote/zk/output/count-today-effort.sh"))
+
+(defun wr/org-roam-notes-today-effort-update ()
+  "Update the LAST_MODIFIED file property in the preamble."
+  (when my-org-roam-dir-local-flag
+    (external-script-to-write-today-effort)))
+
+(add-hook 'org-mode-hook 'wr-org-roam-mode)
+(add-hook 'org-roam-mode-hook 'wr-org-roam-mode)
+(add-hook 'wr-org-roam-mode-hook 'wr-org-roam-mode-line-need-more-effort)
+(add-hook 'before-save-hook #'wr/org-roam-notes-today-effort-update)
+#+end_src
 
 Please put this file `.dir-locals.el` in the `org-roam` directory:
 #+begin_src elisp
@@ -40,4 +71,14 @@ Please put this file `.dir-locals.el` in the `org-roam` directory:
 
 ((org-mode . ((my-dir-local-flag . t)
               (my-org-roam-dir-local-flag . t))))
+#+end_src
+
+I end up using external shell script to walk around the performance
+issue.
+
+#+begin_src bash
+#!/bin/bash
+
+TODAY=`date +"%Y%m%d"`
+ls -l ORG_ROAM_FOLDER_PATH | grep "$TODAY" | grep -v "~" |  awk '{print $9}' | wc -l > ORG_ROAM_FOLDER_PATH/output/log.today_effort 2>&1
 #+end_src

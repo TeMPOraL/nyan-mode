@@ -55,28 +55,20 @@
 
 (eval-when-compile (require 'cl))
 
-(defun zk/today-effort ()
-  "Check how many ideas generated today"
-  (let ((ideas-today 0)
-        ;;  (idea-folder-name (directory-files org-roam-directory nil "\.org$" t))
-        )
-    ;;  (cl-loop
-    ;;   for my-idea-name in idea-folder-name
-    ;;   if (string-match (format-time-string "%Y%m%d") my-idea-name)
-    ;;   do (incf ideas-today))
-
-    (float ideas-today)))
+;; ref:http://ergoemacs.org/emacs/elisp_read_file_content.html
+(defun get-string-from-file (filePath)
+  "Return filePath's file content."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (buffer-string)))
 
 (defun st/today-effort ()
   "Return a string of how many ideas generated today"
-  (let ((ideas-today 0)
-        ;;  (idea-folder-name (directory-files org-roam-directory nil "\.org$" t))
-        )
-    ;;  (cl-loop
-    ;;   for my-idea-name in idea-folder-name
-    ;;   if (string-match (format-time-string "%Y%m%d") my-idea-name)
-    ;;   do (incf ideas-today))
-    (int-to-string ideas-today)))
+  (substring (get-string-from-file "~/Dropbox/myNote/zk/output/log.today_effort") 0 -1))
+
+(defun zk/today-effort ()
+  "Check how many ideas generated today"
+  (float (string-to-number (st/today-effort))))
 
 (defcustom zk-daily-goal 10
   "Number of seconds between animation frames."
@@ -111,6 +103,8 @@
                   ))
            (force-mode-line-update)
            )))
+
+(add-hook 'before-save-hook #'wr-org-roam-mode-line-need-more-effort)
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
