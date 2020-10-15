@@ -1,8 +1,8 @@
 * A fork version of Nyan Mode - To motivate you write more  :)
 
-
 The nyan bar is now a progress bar.
 
+[[file:screenshot.png]]
 
 It is another minor mode in addition to the `nyan-mode`. It can
 achieve my original thoughts, but clearly I can make it into one and
