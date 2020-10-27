@@ -1,11 +1,11 @@
-;;; nyan-mode.el --- Nyan Cat shows position in current buffer in mode-line.
+;;; nyan-roam-mode.el --- Nyan Cat shows position in current buffer in mode-line.
 
 ;; Nyanyanyanyanyanyanya!
 
-;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
-;; URL: https://github.com/TeMPOraL/nyan-mode/
-;; Version: 1.1.3
-;; Keywords: nyan, cat, lulz, scrolling, pop tart cat, build something amazing
+;; Author: Ran Wang
+;; URL:
+;; Version:
+;; Keywords: nyan, cat, progress bar
 
 ;; This file is not part of GNU Emacs.
 
@@ -28,34 +28,17 @@
 
 ;;; Commentary:
 
-;; NEW! You can now click on the rainbow (or the empty space)
-;; to scroll your buffer!
-
-;; NEW! You can now customize the minimum window width
-;; below which the nyan-mode will be disabled, so that more important
-;; information can be shown in the modeline.
-
-;; To activate, just load and put `(nyan-mode 1)' in your init file.
-
 ;; Contributions and feature requests welcome!
 
-;; Inspired by (and in few places copied from) sml-modeline.el written by Lennart Borgman.
-;; See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
+;; Inspired by Nyan-mode written by Jacek "TeMPOraL" Zlydach.
+;; See: https://github.com/TeMPOraL/nyan-mode/
 
 ;;; History:
-
-;; 2016-04-26 - introduced click-to-scroll feature.
-
-;; Started as a totally random idea back in August 2011.
-
-;; The homepage at http://nyan-mode.buildsomethingamazing.com died somewhen in 2014/2015 because reasons.
-;; I might get the domain back one day.
 
 ;;; Code:
 
 (eval-when-compile (require 'cl))
 
-;; ref:http://ergoemacs.org/emacs/elisp_read_file_content.html
 (defun get-string-from-file (filePath)
   "Return filePath's file content."
   (with-temp-buffer
