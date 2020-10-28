@@ -97,8 +97,6 @@
 (defconst +nyan-rainbow-image+ (concat +nyan-directory+ "img/rainbow.xpm"))
 (defconst +nyan-outerspace-image+ (concat +nyan-directory+ "img/outerspace.xpm"))
 
-(defconst +nyan-music+ (concat +nyan-directory+ "mus/nyanlooped.mp3"))
-
 (defconst +nyan-modeline-help-string+ "Nyanyanya!\nmouse-1: Scroll buffer position")
 
 (defvar nyan-old-car-mode-line-position nil)
@@ -306,23 +304,6 @@ This can be t or nil."
                           nyancat-string
                           outerspace-string)
                   'help-echo +nyan-modeline-help-string+))))
-
-
-;;; Music handling.
-
-;; mplayer needs to be installed for that
-(defvar nyan-music-process nil)
-
-(defun nyan-start-music ()
-  (interactive)
-  (unless nyan-music-process
-    (setq nyan-music-process (start-process-shell-command "nyan-music" "nyan-music" (concat "mplayer " +nyan-music+ " -loop 0")))))
-
-(defun nyan-stop-music ()
-  (interactive)
-  (when nyan-music-process
-    (delete-process nyan-music-process)
-    (setq nyan-music-process nil)))
 
 
 
