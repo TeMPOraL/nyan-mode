@@ -1,8 +1,8 @@
-;;; nyan-roam-mode.el --- Nyan Cat shows position in current buffer in mode-line.
+;;; org-roam-nyan-mode.el --- Nyan Cat shows position in current buffer in mode-line.
 
 ;; Nyanyanyanyanyanyanya!
 
-;; Author: Ran Wang
+;; Author: randomwangran
 ;; URL:
 ;; Version:
 ;; Keywords: nyan, cat, progress bar
@@ -45,13 +45,13 @@
     (insert-file-contents filePath)
     (buffer-string)))
 
-(defun st/today-effort ()
+(defun today-effort-str ()
   "Return a string of how many ideas generated today"
-  (substring (get-string-from-file "~/Dropbox/myNote/zk/output/log.today_effort") 0 -1))
+  (substring (get-string-from-file "~/.emacs.d/nyan-mode/log.today_effort") 0 -1))
 
-(defun zk/today-effort ()
+(defun today-effort ()
   "Check how many ideas generated today"
-  (float (string-to-number (st/today-effort))))
+  (float (string-to-number (today-effort-str))))
 
 (defcustom zk-daily-goal 10
   "Number of seconds between animation frames."
@@ -80,7 +80,7 @@
                   "|"
                   "%n"
                   "Today: "
-                  '(:eval (st/today-effort))
+                  '(:eval (today-effort-str))
                   "  Goal: "
                   '(:eval (format "%s" zk-daily-goal))
                   ))
@@ -240,9 +240,9 @@ This can be t or nil."
 
 (defun nyan-number-of-rainbows ()
   (round (/ (* (round (* 100
-                         (if (> (/ (zk/today-effort) zk-daily-goal) 1)
+                         (if (> (/ (today-effort) zk-daily-goal) 1)
                              (float 1)
-                           (/ (zk/today-effort) zk-daily-goal))
+                           (/ (today-effort) zk-daily-goal))
                          ))
                (- nyan-bar-length +nyan-cat-size+))
             100)))
@@ -349,6 +349,6 @@ option `scroll-bar-mode'."
          (setq nyan-old-car-mode-line-position nil))))
 
 
-(provide 'tweak-nyan-mode)
+(provide 'org-roam-nyan-mode)
 
-;;; nyan-mode.el ends here
+;;; org-roam-nyan-mode.el ends here
