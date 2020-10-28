@@ -54,7 +54,7 @@
   (float (string-to-number (today-effort-str))))
 
 (defcustom zk-daily-goal 10
-  "Daily goal."
+  "Number of seconds between animation frames."
   :type 'float
   :group 'nyan)
 
@@ -96,6 +96,8 @@
 (defconst +nyan-cat-image+ (concat +nyan-directory+ "img/nyan.xpm"))
 (defconst +nyan-rainbow-image+ (concat +nyan-directory+ "img/rainbow.xpm"))
 (defconst +nyan-outerspace-image+ (concat +nyan-directory+ "img/outerspace.xpm"))
+
+(defconst +nyan-music+ (concat +nyan-directory+ "mus/nyanlooped.mp3"))
 
 (defconst +nyan-modeline-help-string+ "Nyanyanya!\nmouse-1: Scroll buffer position")
 
@@ -170,6 +172,21 @@ Minimum of 3 units are required for Nyan Cat."
          (nyan-refresh))
   :group 'nyan)
 
+(defcustom nyan-animate-nyancat nil
+  "Enable animation for Nyan Cat.
+This can be t or nil."
+  :type '(choice (const :tag "Enabled" t)
+                 (const :tag "Disabled" nil))
+  ;; FIXME: Starting an animation timer on defcustom isn't a good idea; this needs to, at best, maybe start/stop a timer iff the mode is on,
+  ;; otherwise just set a flag. -- Jacek Złydach, 2020-05-26
+  :set (lambda (sym val)
+         (set-default sym val)
+         (if val
+             (nyan-start-animation)
+           (nyan-stop-animation))
+         (nyan-refresh))
+  :group 'nyan)
+
 (defcustom nyan-cat-face-number 1
   "Select cat face number for console."
   :type 'integer
@@ -186,6 +203,18 @@ Minimum of 3 units are required for Nyan Cat."
                                                           'xpm nil :ascent 95))
                                           '(1 2 3 4 5 6))))
 (defvar nyan-current-frame 0)
+
+(defconst +nyan-catface+ [
+                          ["[]*" "[]#"]
+                          ["(*^ｰﾟ)" "( ^ｰ^)" "(^ｰ^ )" "(ﾟｰ^*)"]
+                          ["(´ω｀三 )" "( ´ω三｀ )" "( ´三ω｀ )" "( 三´ω｀)"
+                           "( 三´ω｀)" "( ´三ω｀ )" "( ´ω三｀ )" "(´ω｀三 )"]
+                          ["(´д｀;)" "( ´д`;)" "( ;´д`)" "(;´д` )"]
+                          ["(」・ω・)」" "(／・ω・)／" "(」・ω・)」" "(／・ω・)／"
+                           "(」・ω・)」" "(／・ω・)／" "(」・ω・)」" "＼(・ω・)／"]
+                          ["(＞ワ＜三　　　)" "(　＞ワ三＜　　)"
+                           "(　　＞三ワ＜　)" "(　　　三＞ワ＜)"
+                           "(　　＞三ワ＜　)" "(　＞ワ三＜　　)"]])
 
 (defun nyan-toggle-wavy-trail ()
   "Toggle the trail to look more like the original Nyan Cat animation."
@@ -217,6 +246,9 @@ Minimum of 3 units are required for Nyan Cat."
                          ))
                (- nyan-bar-length +nyan-cat-size+))
             100)))
+
+(defun nyan-catface ()
+  (aref +nyan-catface+ nyan-cat-face-number))
 
 (defun nyan-catface-index ()
   (min (round (/ (* (round (* 100
@@ -274,6 +306,23 @@ Minimum of 3 units are required for Nyan Cat."
                           nyancat-string
                           outerspace-string)
                   'help-echo +nyan-modeline-help-string+))))
+
+
+;;; Music handling.
+
+;; mplayer needs to be installed for that
+(defvar nyan-music-process nil)
+
+(defun nyan-start-music ()
+  (interactive)
+  (unless nyan-music-process
+    (setq nyan-music-process (start-process-shell-command "nyan-music" "nyan-music" (concat "mplayer " +nyan-music+ " -loop 0")))))
+
+(defun nyan-stop-music ()
+  (interactive)
+  (when nyan-music-process
+    (delete-process nyan-music-process)
+    (setq nyan-music-process nil)))
 
 
 
