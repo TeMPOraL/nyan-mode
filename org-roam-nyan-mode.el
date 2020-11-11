@@ -83,6 +83,8 @@
                   '(:eval (today-effort-str))
                   "  Goal: "
                   '(:eval (format "%s" zk-daily-goal))
+                  "   "
+                  'global-mode-string
                   ))
            (force-mode-line-update)
            )))
