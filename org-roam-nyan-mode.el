@@ -1,15 +1,13 @@
-;;; org-roam-nyan-mode.el --- Nyan Cat shows position in current buffer in mode-line.
+;;; org-roam-nyan-mode.el --- Nyan Cat shows how many ideas you are trying to create each day.
 
 ;; Nyanyanyanyanyanyanya!
 
-;; Author: randomwangran
+;; Author: Ran Wang
 ;; URL:
 ;; Version:
-;; Keywords: nyan, cat, progress bar
+;; Keywords: nyan, cat, progress bar, org-roam
 
 ;; This file is not part of GNU Emacs.
-
-;; ...yet. ;).
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -64,8 +62,7 @@
     (insert-file-contents filePath)
     (split-string (buffer-string) "\n" t)))
 
-(defun wr-org-roam-mode-line-need-more-effort ()
-  "My mode line for org-roam"
+(defun org-roam-mode-line-need-more-effort ()
   (when (string-match-p (expand-file-name org-roam-directory) (format "%s" buffer-file-name))
     (progn (setq mode-line-format
                  (list
@@ -89,7 +86,7 @@
            (force-mode-line-update)
            )))
 
-(add-hook 'before-save-hook #'wr-org-roam-mode-line-need-more-effort)
+(add-hook 'before-save-hook #'org-roam-mode-line-need-more-effort)
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
