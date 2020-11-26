@@ -1,12 +1,19 @@
-* A fork version of Nyan Mode - To motivate you write more  :)
+* A fork version of Nyan Mode - To motivate you write more
 
-The nyan bar is now a progress bar.
+#+begin_quote
+It is so easy to overestimate the importance of one defining moment
+and underestimate the value of making small improvements on a daily
+basis. Too often, we convince ourselves that massive success requires
+massive action. Whether it is losing weight, building a business,
+writing a book, winning a championship, or achieving any other goal,
+we put pressure on ourselves to make some earth-shattering
+improvement that everyone will talk about.
+#+end_quote
+
+- Clear, J. (2018). Atomic habits: an easy \& proven way to build good
+  habits \& break bad ones. : Penguin.
 
 [[file:screenshot.png]]
-
-It is another minor mode in addition to the `nyan-mode`. It can
-achieve my original thoughts, but clearly I can make it into one and
-finally perhaps a separated package.
 
 * set up
 #+begin_src elisp
