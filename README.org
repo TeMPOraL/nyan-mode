@@ -10,12 +10,18 @@ we put pressure on ourselves to make some earth-shattering
 improvement that everyone will talk about.
 #+end_quote
 
-- Clear, J. (2018). Atomic habits: an easy \& proven way to build good
-  habits \& break bad ones. : Penguin.
+- Clear, J. (2018). Atomic habits: an easy & proven way to build good
+  habits & break bad ones. : Penguin.
 
 [[file:screenshot.png]]
 
 * set up
+
+Sorry, I do not know how to write it into single script installation. 
+It needs manually installation. The user is expected to know how to 
+setup a `.dir-locals.el` file to make it run.
+
+
 #+begin_src elisp
 (add-to-list 'load-path "~/.emacs.d/nyan-mode")
 (require 'tweak-nyan-mode)
