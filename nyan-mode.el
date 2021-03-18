@@ -53,8 +53,6 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
-
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
 (defconst +nyan-cat-size+ 3)
