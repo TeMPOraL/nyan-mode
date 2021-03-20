@@ -90,7 +90,25 @@ Intended to be called when customizations were changed, to reapply them immediat
          (nyan-refresh))
   :group 'nyan)
 
+(defcustom nyan-animation-endless-loop t
+  "If non-nil then the progress bar animation never stops.
+If nil then the animation loops a few time only when Nyan Cat moves."
+  :type 'boolean
+  :group 'nyan)
+
 (defvar nyan-animation-timer nil)
+
+(defvar nyan-animation-loop-count 0
+  "Count the number of loops since the animation started.")
+
+(defvar nyan-animation-loop-max 1
+  "Maximum number of loops. When the max is reached the animation stops.")
+
+(defvar nyan-nyan-wavy-trail-enabled nil
+  "Internal toggle to display a wavy trail.")
+
+(defvar nyan-prev-outerspaces nil
+  "Keeps track of the trail length to detect when animation should start.")
 
 (defun nyan--is-animating-p ()
   "T if animating, NIL otherwise."
@@ -122,9 +140,13 @@ This is important because nyan-mode will push out all informations from small wi
 (defcustom nyan-wavy-trail nil
   "If enabled, Nyan Cat's rainbow trail will be wavy."
   :type '(choice (const :tag "Enabled" t)
+                 (const :tag "Only during animation" 'animation-only)
                  (const :tag "Disabled" nil))
   :set (lambda (sym val)
          (set-default sym val)
+         (if sym
+             (setq nyan-nyan-wavy-trail-enabled t)
+           (setq nyan-nyan-wavy-trail-enabled nil))
          (nyan-refresh))
   :group 'nyan)
 
@@ -185,11 +207,16 @@ This can be t or nil."
 (defun nyan-toggle-wavy-trail ()
   "Toggle the trail to look more like the original Nyan Cat animation."
   (interactive)
-  (setq nyan-wavy-trail (not nyan-wavy-trail)))
+  (setq nyan-nyan-wavy-trail-enabled (not nyan-nyan-wavy-trail-enabled)))
 
 (defun nyan-swich-anim-frame ()
-  (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
-  (redraw-modeline))
+  (when (<= nyan-animation-loop-count nyan-animation-loop-max)
+    (when (member nyan-wavy-trail '(t animation-only))
+      (setq nyan-nyan-wavy-trail-enabled t))
+    (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
+    (when (equal nyan-current-frame 5)
+      (setq nyan-animation-loop-count (1+ nyan-animation-loop-count)))
+    (redraw-modeline)))
 
 (defun nyan-get-anim-frame ()
   (if (nyan--is-animating-p)
@@ -237,6 +264,9 @@ This can be t or nil."
 
 (defun nyan-create ()
   "Return the Nyan Cat indicator to be inserted into mode line."
+  (when (and (eq nyan-wavy-trail 'animation-only)
+             (> nyan-animation-loop-count nyan-animation-loop-max))
+    (setq nyan-nyan-wavy-trail-enabled nil))
   (if (< (window-width) nyan-minimum-window-width)
       ""                                ; disabled for too small windows
     (let* ((rainbows (nyan-number-of-rainbows))
@@ -253,11 +283,15 @@ This can be t or nil."
                                      (nyan-add-scroll-handler
                                       (if xpm-support
                                           (propertize "|"
-                                                      'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
+                                                      'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-nyan-wavy-trail-enabled
                                                                                                                             (nyan-wavy-rainbow-ascent number))
                                                                                                                        (if (nyan--is-animating-p) 95 'center))))
                                         "|")
                                       (/ (float number) nyan-bar-length) buffer))))
+      (when (or nyan-animation-endless-loop
+                (not (equal outerspaces nyan-prev-outerspaces)))
+        (setq nyan-animation-loop-count 0
+              nyan-prev-outerspaces outerspaces))
       (dotimes (number outerspaces)
         (setq outerspace-string (concat outerspace-string
                                         (nyan-add-scroll-handler
