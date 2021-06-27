@@ -85,7 +85,7 @@ will hopefully track it down and fix it soon.
 Thanks to everyone contributing patches, bug repots and ideas! The Emacs world is forever in your debt!
 
 Code and idea inspired by sml-modeline.el, written by Lennart Borgman.
-See: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
+See: https://github.com/emacsmirror/sml-modeline/blob/master/sml-modeline.el
 
 For animated Nyan Cat, I used frames [[http://media.photobucket.com/image/nyan%20cat%20sprites/DryBowser455/th_NyanCatSprite.png?t=1304659408][by DryBowser455]].
 
