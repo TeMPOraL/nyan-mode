@@ -35,7 +35,6 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
 
 (defun get-string-from-file (filePath)
   "Return filePath's file content."
