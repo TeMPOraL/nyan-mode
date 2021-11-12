@@ -60,7 +60,11 @@
 (defconst +nyan-cat-size+ 3)
 
 (defconst +nyan-cat-image+ (concat +nyan-directory+ "img/nyan.xpm"))
+(defconst +nyan-cat-pale-image+ (concat +nyan-directory+ "img/nyan-pale.xpm"))
+
 (defconst +nyan-rainbow-image+ (concat +nyan-directory+ "img/rainbow.xpm"))
+(defconst +nyan-rainbow-pale-image+ (concat +nyan-directory+ "img/rainbow-pale.xpm"))
+
 (defconst +nyan-outerspace-image+ (concat +nyan-directory+ "img/outerspace.xpm"))
 
 (defconst +nyan-music+ (concat +nyan-directory+ "mus/nyanlooped.mp3"))
@@ -81,6 +85,15 @@ Intended to be called when customizations were changed, to reapply them immediat
                nyan-mode)
       (nyan-mode -1)
       (nyan-mode 1))))
+
+(defcustom nyan-mark-modified-buffers nil
+  "If enabled, modified buffers show a pale nyan cat."
+  :type '(choice (const :tag "Enabled" t)
+                 (const :tag "Disabled" nil))
+  :set (lambda (sym val)
+         (set-default sym val)
+         (nyan-refresh))
+  :group 'nyan)
 
 (defcustom nyan-animation-frame-interval 0.2
   "Number of seconds between animation frames."
@@ -163,6 +176,19 @@ This can be t or nil."
 (defvar nyan-cat-image (if (image-type-available-p 'xpm)
                            (create-image +nyan-cat-image+ 'xpm nil :ascent 'center)))
 
+(defvar nyan-cat-pale-image (if (image-type-available-p 'xpm)
+                                (create-image +nyan-cat-pale-image+ 'xpm nil :ascent 'center)))
+
+(defun nyan-rainbow-image (number)
+  (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
+                                                               (nyan-wavy-rainbow-ascent number))
+                                                          (if (nyan--is-animating-p) 95 'center))))
+
+(defun nyan-rainbow-pale-image (number)
+  (create-image +nyan-rainbow-pale-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
+                                                                    (nyan-wavy-rainbow-ascent number))
+                                                               (if (nyan--is-animating-p) 95 'center))))
+
 (defvar nyan-animation-frames (if (image-type-available-p 'xpm)
                                   (mapcar (lambda (id)
                                             (create-image (concat +nyan-directory+ (format "img/nyan-frame-%d.xpm" id))
@@ -194,7 +220,10 @@ This can be t or nil."
 (defun nyan-get-anim-frame ()
   (if (nyan--is-animating-p)
       (nth nyan-current-frame nyan-animation-frames)
-    nyan-cat-image))
+    ;; TODO Support animating pale nyan cat
+    (if (and nyan-mark-modified-buffers (buffer-modified-p))
+        nyan-cat-pale-image
+      nyan-cat-image)))
 
 (defun nyan-wavy-rainbow-ascent (number)
   (if (nyan--is-animating-p)
@@ -253,9 +282,9 @@ This can be t or nil."
                                      (nyan-add-scroll-handler
                                       (if xpm-support
                                           (propertize "|"
-                                                      'display (create-image +nyan-rainbow-image+ 'xpm nil :ascent (or (and nyan-wavy-trail
-                                                                                                                            (nyan-wavy-rainbow-ascent number))
-                                                                                                                       (if (nyan--is-animating-p) 95 'center))))
+                                                      'display (if (and nyan-mark-modified-buffers (buffer-modified-p))
+                                                                   (nyan-rainbow-pale-image number)
+                                                                 (nyan-rainbow-image number)))
                                         "|")
                                       (/ (float number) nyan-bar-length) buffer))))
       (dotimes (number outerspaces)
