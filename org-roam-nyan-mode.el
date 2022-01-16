@@ -35,6 +35,25 @@
 
 ;;; Code:
 
+;;;; Requirements
+
+(require 'ts)
+
+(defcustom zk-reminder-string "Wk:"
+  "Information need to keep in mind."
+  :type 'string
+  :group 'nyan)
+
+(defcustom zk-reminder-date-string "2021-01-01"
+  "By setting date, the modeline will show how many weeks past
+from a date."
+  :type 'string
+  :group 'nyan)
+
+(defun zk-how-many-weeks-from-a-date ()
+  (round (/ (- (ts-unix (ts-now))
+               (ts-unix (ts-parse zk-reminder-date-string)))
+               (* 86400 7))))
 
 (defun get-string-from-file (filePath)
   "Return filePath's file content."
@@ -75,11 +94,14 @@
                   '(:eval (list (nyan-create)))
                   "|"
                   "%n"
-                  "Today: "
+                  " Today: "
                   '(:eval (today-effort-str))
                   "  Goal: "
                   '(:eval (format "%s" zk-daily-goal))
                   "   "
+                  " | "
+                  zk-reminder-string
+                  (format "%s" (zk-how-many-weeks-from-a-date))
                   'global-mode-string
                   ))
            (force-mode-line-update)
