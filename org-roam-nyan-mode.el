@@ -51,9 +51,10 @@ from a date."
   :group 'nyan)
 
 (defun zk-how-many-weeks-from-a-date ()
-  (round (/ (- (ts-unix (ts-now))
-               (ts-unix (ts-parse zk-reminder-date-string)))
-               (* 86400 7))))
+  (/ (round (/ (- (ts-unix (ts-now))
+                  (ts-unix (ts-parse zk-reminder-date-string)))
+               86400))
+     7))
 
 (defun get-string-from-file (filePath)
   "Return filePath's file content."
