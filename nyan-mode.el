@@ -190,7 +190,7 @@ This can be t or nil."
 
 (defun nyan-swich-anim-frame ()
   (setq nyan-current-frame (% (+ 1 nyan-current-frame) 6))
-  (redraw-modeline))
+  (force-mode-line-update))
 
 (defun nyan-get-anim-frame ()
   (if (nyan--is-animating-p)
