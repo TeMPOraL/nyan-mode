@@ -1,11 +1,12 @@
-;;; nyan-mode.el --- Nyan Cat shows position in current buffer in mode-line.  -*- lexical-binding: t; -*-
+;;; nyan-mode.el --- Nyan Cat shows position in current buffer in mode-line  -*- lexical-binding: t; -*-
 
 ;; Nyanyanyanyanyanyanya!
 
 ;; Author: Jacek "TeMPOraL" Zlydach <temporal.pl@gmail.com>
 ;; URL: https://github.com/TeMPOraL/nyan-mode/
 ;; Version: 1.1.3
-;; Keywords: nyan, cat, lulz, scrolling, pop tart cat, build something amazing
+;; Keywords: convenience, games, mouse, multimedia
+;; Nyanwords: nyan, cat, lulz, scrolling, pop tart cat, build something amazing
 ;; Package-Requires: ((emacs "24.1"))
 
 ;; This file is not part of GNU Emacs.
