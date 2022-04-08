@@ -84,10 +84,10 @@ will hopefully track it down and fix it soon.
 ** Credits
 Thanks to everyone contributing patches, bug repots and ideas! The Emacs world is forever in your debt!
 
-Code and idea inspired by sml-modeline.el, written by Lennart Borgman.
-See: https://github.com/emacsmirror/sml-modeline/blob/master/sml-modeline.el
+Code and idea inspired by =sml-modeline=, maintained by [[https://launchpad.net/~lennart-borgman][Lennart Borgman]]. See [[https://github.com/emacsmirror/sml-modeline/blob/master/sml-modeline.el][source]].
+=sml-modeline= is also available on Melpa ([[https://melpa.org/#/sml-modeline][file:https://melpa.org/packages/sml-modeline-badge.svg]]).
 
-For animated Nyan Cat, I used frames [[http://media.photobucket.com/image/nyan%20cat%20sprites/DryBowser455/th_NyanCatSprite.png?t=1304659408][by DryBowser455]].
+For animated Nyan Cat, I used [[http://web.archive.org/web/20181010013323im_/http://i1037.photobucket.com/albums/a453/DryBowser455/NyanCatSprite.png][frames]] [[https://web.archive.org/web/20130116191051/http://media.photobucket.com/image/nyan%20cat%20sprites/DryBowser455/th_NyanCatSprite.png?t=1304659408][by DryBowser455]].
 
 ** Other editors
 For many years only the [[https://www.gnu.org/software/emacs/][One True Editor]] was blessed with the presence
@@ -100,7 +100,7 @@ Here are the examples I've tracked down so far:
 - Vim - edvb54's [[https://github.com/edvb54/catium.vim][catium.vim]] (also text, apparently)
 - Sublime Text - wiggin15's [[https://github.com/wiggin15/SublimeNyan][SublimeNyan]]
 - Atom - dz's [[https://github.com/dz/atom-nyancat][atom-nyancat]]
-- qutebrowser - [[https://github.com/jgkamat/qutenyan][qutenyan]]
+- qutebrowser - [[https://gitlab.com/jgkamat/qutenyan][qutenyan]]
 
 If you've seen others in the wild, please submit.
 
@@ -108,7 +108,7 @@ If you've seen others in the wild, please submit.
 
 Check out Aaron Miller's [[https://github.com/aaron-em/weatherline-mode.el][weatherline.el]], partially inspired by Nyan Mode.
 
-Also check out [[https://github.com/wasamasa/zone-nyan][zone-nyan]] by Vasilij Schneidermann if you want the Nyan
+Also check out [[https://depp.brause.cc/zone-nyan/][zone-nyan]] by Vasilij Schneidermann ([[https://github.com/wasamasa][wasamasa]]) if you want the Nyan
 Cat to visit your Emacs when you step away from the keyboard!
 
 Nyanyanyanyanyanyanya! ♬ ♫ ♪ ♩
