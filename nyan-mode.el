@@ -1,4 +1,4 @@
-;;; nyan-mode.el --- Nyan Cat shows position in current buffer in mode-line.
+;;; nyan-mode.el --- Nyan Cat shows position in current buffer in mode-line.  -*- lexical-binding: t; -*-
 
 ;; Nyanyanyanyanyanyanya!
 
@@ -6,6 +6,7 @@
 ;; URL: https://github.com/TeMPOraL/nyan-mode/
 ;; Version: 1.1.3
 ;; Keywords: nyan, cat, lulz, scrolling, pop tart cat, build something amazing
+;; Package-Requires: ((emacs "24.1"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -52,8 +53,6 @@
 ;; I might get the domain back one day.
 
 ;;; Code:
-
-(eval-when-compile (require 'cl))
 
 (defconst +nyan-directory+ (file-name-directory (or load-file-name buffer-file-name)))
 
@@ -231,8 +230,8 @@ This can be t or nil."
 
 (defun nyan-add-scroll-handler (string percentage buffer)
   "Propertize `STRING' to scroll `BUFFER' to `PERCENTAGE' on click."
-  (lexical-let ((percentage percentage)
-                (buffer buffer))
+  (let ((percentage percentage)
+        (buffer buffer))
     (propertize string 'keymap `(keymap (mode-line keymap (down-mouse-1 . ,(lambda () (interactive) (nyan-scroll-buffer percentage buffer))))))))
 
 (defun nyan-create ()
