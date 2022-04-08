@@ -75,7 +75,8 @@
 
 (defun nyan-refresh ()
   "Refresh nyan mode.
-Intended to be called when customizations were changed, to reapply them immediately."
+Intended to be called when customizations were changed, to
+reapply them immediately."
   (when (featurep 'nyan-mode)
     (when (and (boundp 'nyan-mode)
                nyan-mode)
@@ -111,7 +112,8 @@ Intended to be called when customizations were changed, to reapply them immediat
 
 (defcustom nyan-minimum-window-width 64
   "Minimum width of the window, below which nyan-mode will not be displayed.
-This is important because nyan-mode will push out all informations from small windows."
+This is important because nyan-mode will push out all
+informations from small windows."
   :type 'integer
   :set (lambda (sym val)
          (set-default sym val)
@@ -156,8 +158,7 @@ This can be t or nil."
 (defcustom nyan-cat-face-number 1
   "Select cat face number for console."
   :type 'integer
-  :group 'nyan
-  )
+  :group 'nyan)
 
 ;;; Load images of Nyan Cat an it's rainbow.
 (defvar nyan-cat-image (if (image-type-available-p 'xpm)
@@ -233,7 +234,12 @@ This can be t or nil."
   "Propertize `STRING' to scroll `BUFFER' to `PERCENTAGE' on click."
   (let ((percentage percentage)
         (buffer buffer))
-    (propertize string 'keymap `(keymap (mode-line keymap (down-mouse-1 . ,(lambda () (interactive) (nyan-scroll-buffer percentage buffer))))))))
+    (propertize string
+                'keymap
+                `(keymap (mode-line keymap
+                                    (down-mouse-1 . ,(lambda ()
+                                                       (interactive)
+                                                       (nyan-scroll-buffer percentage buffer))))))))
 
 (defun nyan-create ()
   "Return the Nyan Cat indicator to be inserted into mode line."
@@ -281,7 +287,9 @@ This can be t or nil."
 (defun nyan-start-music ()
   (interactive)
   (unless nyan-music-process
-    (setq nyan-music-process (start-process-shell-command "nyan-music" "nyan-music" (concat "mplayer " +nyan-music+ " -loop 0")))))
+    (setq nyan-music-process (start-process-shell-command "nyan-music"
+                                                          "nyan-music"
+                                                          (concat "mplayer " +nyan-music+ " -loop 0")))))
 
 (defun nyan-stop-music ()
   (interactive)
