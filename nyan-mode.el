@@ -209,7 +209,8 @@ This can be t or nil."
   (round (/ (* (round (* 100
                          (/ (- (float (point))
                                (float (point-min)))
-                            (float (point-max)))))
+                            (float (- (point-max)
+                                      (point-min))))))
                (- nyan-bar-length nyan-cat-size))
             100)))
 
@@ -244,7 +245,7 @@ This can be t or nil."
 
 (defun nyan-create ()
   "Return the Nyan Cat indicator to be inserted into mode line."
-  (if (< (window-width) nyan-minimum-window-width)
+  (if (< (window-total-width) nyan-minimum-window-width)
       ""                                ; disabled for too small windows
     (let* ((rainbows (nyan-number-of-rainbows))
            (outerspaces (- nyan-bar-length rainbows nyan-cat-size))
