@@ -30,6 +30,9 @@
 
 ;;; Commentary:
 
+;; NEW! You can now chill with Nyan OR Party Parrot!
+;; Just put `(setf nyan-image 'parrot)` in your init file.
+
 ;; NEW! You can now click on the rainbow (or the empty space)
 ;; to scroll your buffer!
 
@@ -67,7 +70,12 @@
 
 (defconst nyan-modeline-help-string "Nyanyanya!\nmouse-1: Scroll buffer position")
 
+(defconst nyan-parrot-directory (concat nyan-directory "img/parrot/"))
+(defconst nyan-parrot-image (concat nyan-parrot-directory "default-parrot-frame-1.xpm"))
+
 (defvar nyan-old-car-mode-line-position nil)
+
+(defvar nyan-image 'nyan)
 
 (defgroup nyan nil
   "Customization group for `nyan-mode'."
@@ -160,15 +168,58 @@ This can be t or nil."
   :type 'integer
   :group 'nyan)
 
-;;; Load images of Nyan Cat an it's rainbow.
-(defvar nyan-cat-image (if (image-type-available-p 'xpm)
-                           (create-image nyan-cat-face-image 'xpm nil :ascent 'center)))
+;;; Load images of Nyan Cat and its rainbow.
 
-(defvar nyan-animation-frames (if (image-type-available-p 'xpm)
-                                  (mapcar (lambda (id)
-                                            (create-image (concat nyan-directory (format "img/nyan-frame-%d.xpm" id))
-                                                          'xpm nil :ascent 95))
-                                          '(1 2 3 4 5 6))))
+;;; Loads the image.
+;;; Image may be either 'nyan or 'parrot.
+;;; Assumes xpm is available.
+(defun load-nyan-image (image)
+  (cond ((eq nyan-image 'nyan)
+         (create-image nyan-cat-face-image 'xpm nil :ascent 'center))
+        ((eq nyan-image 'parrot)
+         (create-image nyan-parrot-image 'xpm nil :ascent 'center))))
+
+;;; Caches loaded images as an alist.
+(defvar nyan-image-cache '())
+
+(defun nyan-icon-image ()
+  (if (image-type-available-p 'xpm)
+      (let ((image (alist-get nyan-image nyan-image-cache)))
+        (when (null image)
+          (let ((new-image (load-nyan-image nyan-image)))
+            (setf nyan-image-cache
+                  (cons (cons nyan-image new-image) nyan-image-cache))
+            (setf image new-image)))
+        image)))
+
+;;; Loads the frames for the given image.
+;;; Image may be either 'nyan or 'parrot.
+;;; Assumes xpm is available.
+(defun nyan-load-animation-frames (image)
+  (cond ((eq image 'nyan)
+         (mapcar (lambda (id)
+                   (create-image (concat nyan-directory (format "img/nyan-frame-%d.xpm" id))
+                                 'xpm nil :ascent 95))
+                 '(1 2 3 4 5 6)))
+        ((eq image 'parrot)
+         (mapcar (lambda (id)
+                   (create-image (concat nyan-parrot-directory (format "/default-parrot-frame-%d.xpm" id))
+                                 'xpm nil :ascent 95))
+                 '(1 2 3 4 5 6 7 8 9)))))
+
+;;; Caches animation frames as an alist.
+(defvar nyan-animation-cache '())
+
+(defun nyan-animation-frames ()
+  (if (image-type-available-p 'xpm)
+      (let ((frames (alist-get nyan-image nyan-animation-cache)))
+        (when (null frames)
+          (let ((animations (nyan-load-animation-frames nyan-image)))
+            (setf nyan-animation-cache
+                  (cons (cons nyan-image animations) nyan-animation-cache))
+            (setf frames animations)))
+        frames)))
+
 (defvar nyan-current-frame 0)
 
 (defconst nyan-cat-face [
@@ -194,8 +245,8 @@ This can be t or nil."
 
 (defun nyan-get-anim-frame ()
   (if (nyan--is-animating-p)
-      (nth nyan-current-frame nyan-animation-frames)
-    nyan-cat-image))
+      (nth nyan-current-frame (nyan-animation-frames))
+    (nyan-icon-image)))
 
 (defun nyan-wavy-rainbow-ascent (number)
   (if (nyan--is-animating-p)
@@ -279,7 +330,7 @@ This can be t or nil."
                           outerspace-string)
                   'help-echo nyan-modeline-help-string))))
 
-
+
 ;;; Music handling.
 
 ;; mplayer needs to be installed for that
@@ -297,8 +348,6 @@ This can be t or nil."
   (when nyan-music-process
     (delete-process nyan-music-process)
     (setq nyan-music-process nil)))
-
-
 
 ;;;###autoload
 (define-minor-mode nyan-mode
