@@ -85,7 +85,7 @@ reapply them immediately."
 
 (defcustom nyan-animation-frame-interval 0.2
   "Number of seconds between animation frames."
-  :type 'float
+  :type 'number
   :set (lambda (sym val)
          (set-default sym val)
          (nyan-refresh))
